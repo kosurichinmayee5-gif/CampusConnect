@@ -1,0 +1,3196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CampusConnect – Academic Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
+  </head>
+  <body
+    id="bodyRoot"
+    class="bg-slate-50 text-slate-900 min-h-screen transition-colors duration-200"
+  >
+    <div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-20"></div>
+
+    <script>
+      const TODAY_DAY = "Friday";
+
+      // ==========================================
+      // 1. MASTER COLLEGE ERP REGISTRY
+      // ==========================================
+      const sectionAdvisors = {
+        "Section A": "FAC_CSE_102",
+        "Section B": "FAC_CSE_101",
+        "Section C": "FAC_CSE_103",
+        "Section D": "FAC_CSE_104",
+        "Section E": "FAC_CSE_105",
+      };
+
+      const authorizedFacultyDB = [
+        {
+          id: "FAC_CSE_101",
+          name: "Prof. K. V. Rao",
+          branch: "CSE",
+          subject: "DBMS",
+          subjectFull: "Database Management Systems",
+          cabin: "Cabin 304, Tech Block",
+          hours: "3:00 PM – 4:30 PM",
+          inChargeOf: "Section B",
+          sections: ["Section A", "Section B", "Section C"],
+          schedules: {
+            "Section A": [
+              {
+                day: "Monday",
+                time: "09:00 AM – 10:00 AM",
+                room: "Room 201",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Wednesday",
+                time: "11:00 AM – 12:00 PM",
+                room: "Room 201",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section B": [
+              {
+                day: "Monday",
+                time: "10:00 AM – 11:00 AM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Wednesday",
+                time: "02:00 PM – 03:00 PM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Friday",
+                time: "11:00 AM – 12:00 PM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section C": [
+              {
+                day: "Tuesday",
+                time: "11:00 AM – 12:00 PM",
+                room: "Room 206",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Thursday",
+                time: "09:00 AM – 10:00 AM",
+                room: "Room 206",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+          },
+        },
+        {
+          id: "FAC_CSE_102",
+          name: "Prof. S. Sharma",
+          branch: "CSE",
+          subject: "OS",
+          subjectFull: "Operating Systems",
+          cabin: "Cabin 208, Central Block",
+          hours: "2:00 PM – 3:30 PM",
+          inChargeOf: "Section A",
+          sections: ["Section A", "Section B", "Section C", "Section E"],
+          schedules: {
+            "Section A": [
+              {
+                day: "Tuesday",
+                time: "10:00 AM – 11:00 AM",
+                room: "Room 201",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Friday",
+                time: "09:00 AM – 10:00 AM",
+                room: "Room 201",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section B": [
+              {
+                day: "Tuesday",
+                time: "11:00 AM – 12:00 PM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Thursday",
+                time: "02:00 PM – 03:00 PM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section C": [
+              {
+                day: "Monday",
+                time: "02:00 PM – 03:00 PM",
+                room: "Room 206",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section E": [
+              {
+                day: "Friday",
+                time: "09:00 AM – 11:00 AM",
+                room: "Room 302",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+          },
+        },
+        {
+          id: "FAC_CSE_103",
+          name: "Prof. M. Reddy",
+          branch: "CSE",
+          subject: "CN",
+          subjectFull: "Computer Networks",
+          cabin: "Cabin 412, Tech Block",
+          hours: "11:00 AM – 12:30 PM",
+          inChargeOf: "Section C",
+          sections: ["Section B", "Section D"],
+          schedules: {
+            "Section B": [
+              {
+                day: "Wednesday",
+                time: "10:00 AM – 11:00 AM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Friday",
+                time: "02:00 PM – 03:00 PM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section D": [
+              {
+                day: "Monday",
+                time: "10:00 AM – 11:00 AM",
+                room: "Room 209",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Thursday",
+                time: "11:00 AM – 12:00 PM",
+                room: "Room 209",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+          },
+        },
+        {
+          id: "FAC_CSE_104",
+          name: "Prof. P. Verma",
+          branch: "CSE",
+          subject: "DAA",
+          subjectFull: "Design & Analysis of Algorithms",
+          cabin: "Cabin 102, Main Block",
+          hours: "4:00 PM – 5:00 PM",
+          inChargeOf: "Section D",
+          sections: [
+            "Section A",
+            "Section B",
+            "Section C",
+            "Section D",
+            "Section E",
+          ],
+          schedules: {
+            "Section A": [
+              {
+                day: "Thursday",
+                time: "02:00 PM – 04:00 PM",
+                room: "Room 201",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section B": [
+              {
+                day: "Monday",
+                time: "09:00 AM – 10:00 AM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Thursday",
+                time: "10:00 AM – 11:00 AM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section C": [
+              {
+                day: "Friday",
+                time: "10:00 AM – 12:00 PM",
+                room: "Room 206",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section D": [
+              {
+                day: "Tuesday",
+                time: "02:00 PM – 03:00 PM",
+                room: "Room 209",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section E": [
+              {
+                day: "Wednesday",
+                time: "11:00 AM – 01:00 PM",
+                room: "Room 302",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+          },
+        },
+        {
+          id: "FAC_CSE_105",
+          name: "Prof. N. Swamy",
+          branch: "CSE",
+          subject: "JAVA",
+          subjectFull: "Java Programming & Lab",
+          cabin: "Cabin 205, Tech Block",
+          hours: "1:30 PM – 3:00 PM",
+          inChargeOf: "Section E",
+          sections: ["Section A", "Section B", "Section D"],
+          schedules: {
+            "Section A": [
+              {
+                day: "Wednesday",
+                time: "02:00 PM – 04:30 PM",
+                room: "Lab 1",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section B": [
+              {
+                day: "Tuesday",
+                time: "09:00 AM – 10:00 AM",
+                room: "Room 204",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+              {
+                day: "Friday",
+                time: "03:00 PM – 05:00 PM",
+                room: "Lab 2 (Tech Block)",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+            "Section D": [
+              {
+                day: "Tuesday",
+                time: "09:00 AM – 11:30 AM",
+                room: "Lab 1",
+                status: "On Schedule",
+                rescheduleInfo: null,
+              },
+            ],
+          },
+        },
+      ];
+
+      // Student Roster with Sex (M / F) used exclusively in "+ Add CR" selector & quota check
+      let authorizedStudentsDB = [
+        // Section B Roster
+        {
+          rollNo: "23VV1A4215",
+          name: "Rahul Varma",
+          sex: "M",
+          branch: "CSE",
+          section: "Section B",
+          crRole: "1st CR",
+        },
+        {
+          rollNo: "23VV1A4205",
+          name: "Ananya K.",
+          sex: "F",
+          branch: "CSE",
+          section: "Section B",
+          crRole: "1st CR",
+        },
+        {
+          rollNo: "23VV1A4201",
+          name: "Alex M.",
+          sex: "M",
+          branch: "CSE",
+          section: "Section B",
+          crRole: "2nd CR",
+        },
+        {
+          rollNo: "23VV1A4209",
+          name: "Sneha R.",
+          sex: "F",
+          branch: "CSE",
+          section: "Section B",
+          crRole: "none",
+        },
+        {
+          rollNo: "23VV1A4218",
+          name: "Kiran Kumar",
+          sex: "M",
+          branch: "CSE",
+          section: "Section B",
+          crRole: "none",
+        },
+        {
+          rollNo: "23VV1A4222",
+          name: "Pooja S.",
+          sex: "F",
+          branch: "CSE",
+          section: "Section B",
+          crRole: "none",
+        },
+
+        // Section A Roster
+        {
+          rollNo: "23VV1A4212",
+          name: "Bhavya R.",
+          sex: "F",
+          branch: "CSE",
+          section: "Section A",
+          crRole: "1st CR",
+        },
+        {
+          rollNo: "23VV1A4214",
+          name: "Rohan T.",
+          sex: "M",
+          branch: "CSE",
+          section: "Section A",
+          crRole: "1st CR",
+        },
+        {
+          rollNo: "23VV1A4219",
+          name: "Meghana V.",
+          sex: "F",
+          branch: "CSE",
+          section: "Section A",
+          crRole: "none",
+        },
+
+        // Section C, D, E Samples
+        {
+          rollNo: "23VV1A4220",
+          name: "Karthik S.",
+          sex: "M",
+          branch: "CSE",
+          section: "Section C",
+          crRole: "1st CR",
+        },
+        {
+          rollNo: "23VV1A4228",
+          name: "Divya N.",
+          sex: "F",
+          branch: "CSE",
+          section: "Section D",
+          crRole: "1st CR",
+        },
+        {
+          rollNo: "23VV1A4235",
+          name: "Varun Teja",
+          sex: "M",
+          branch: "CSE",
+          section: "Section E",
+          crRole: "1st CR",
+        },
+      ];
+
+      // Section-isolated Exam Event Data
+      function createDefaultExamSubjects() {
+        return [
+          {
+            code: "DBMS",
+            name: "Database Management Systems",
+            date: "Nov 14 (Sat)",
+            time: "10:00 AM – 12:00 PM",
+            syllabus: "Modules 1 & 2 (ER Model, Relational Algebra)",
+            status: "On Schedule",
+            rescheduleInfo: null,
+          },
+          {
+            code: "OS",
+            name: "Operating Systems",
+            date: "Nov 16 (Mon)",
+            time: "10:00 AM – 12:00 PM",
+            syllabus: "Modules 1 & 2 (System Calls, CPU Scheduling)",
+            status: "On Schedule",
+            rescheduleInfo: null,
+          },
+          {
+            code: "CN",
+            name: "Computer Networks",
+            date: "Nov 17 (Tue)",
+            time: "10:00 AM – 12:00 PM",
+            syllabus: "Modules 1 & 2 (OSI/TCP-IP, Framing & CRC)",
+            status: "On Schedule",
+            rescheduleInfo: null,
+          },
+          {
+            code: "DAA",
+            name: "Design & Analysis of Algorithms",
+            date: "Nov 18 (Wed)",
+            time: "10:00 AM – 12:00 PM",
+            syllabus: "Modules 1 & 2 (Master Theorem, Greedy MST)",
+            status: "On Schedule",
+            rescheduleInfo: null,
+          },
+          {
+            code: "JAVA",
+            name: "Java Programming",
+            date: "Nov 19 (Thu)",
+            time: "10:00 AM – 12:00 PM",
+            syllabus: "Modules 1 & 2 (JVM, Inheritance & Interfaces)",
+            status: "On Schedule",
+            rescheduleInfo: null,
+          },
+        ];
+      }
+
+      let sectionExamsDB = {
+        "Section A": [
+          {
+            id: "mid1",
+            examName: "Mid-Term 1 Examinations",
+            dateRange: "Nov 14 – Nov 19, 2026",
+            mode: "Pen & Paper (Descriptive)",
+            totalMarks: "30 Marks",
+            pattern: "Part A: 5 × 2M (10M) + Part B: 2 × 10M (20M)",
+            subjects: createDefaultExamSubjects(),
+          },
+        ],
+        "Section B": [
+          {
+            id: "mid1",
+            examName: "Mid-Term 1 Examinations",
+            dateRange: "Nov 14 – Nov 19, 2026",
+            mode: "Pen & Paper (Descriptive)",
+            totalMarks: "30 Marks",
+            pattern: "Part A: 5 × 2M (10M) + Part B: 2 × 10M (20M)",
+            subjects: createDefaultExamSubjects(),
+          },
+        ],
+        "Section C": [
+          {
+            id: "mid1",
+            examName: "Mid-Term 1 Examinations",
+            dateRange: "Nov 14 – Nov 19, 2026",
+            mode: "Pen & Paper (Descriptive)",
+            totalMarks: "30 Marks",
+            pattern: "Part A: 5 × 2M (10M) + Part B: 2 × 10M (20M)",
+            subjects: createDefaultExamSubjects(),
+          },
+        ],
+        "Section D": [
+          {
+            id: "mid1",
+            examName: "Mid-Term 1 Examinations",
+            dateRange: "Nov 14 – Nov 19, 2026",
+            mode: "Pen & Paper (Descriptive)",
+            totalMarks: "30 Marks",
+            pattern: "Part A: 5 × 2M (10M) + Part B: 2 × 10M (20M)",
+            subjects: createDefaultExamSubjects(),
+          },
+        ],
+        "Section E": [
+          {
+            id: "mid1",
+            examName: "Mid-Term 1 Examinations",
+            dateRange: "Nov 14 – Nov 19, 2026",
+            mode: "Pen & Paper (Descriptive)",
+            totalMarks: "30 Marks",
+            pattern: "Part A: 5 × 2M (10M) + Part B: 2 × 10M (20M)",
+            subjects: createDefaultExamSubjects(),
+          },
+        ],
+      };
+
+      let assignmentsList = [
+        {
+          id: 1,
+          title: "DBMS Assignment 2: Normalization (1NF to BCNF)",
+          subject: "DBMS",
+          due: "Tomorrow, 4:00 PM",
+          submitTo: "Prof. K. V. Rao (Cabin 304)",
+          section: "Section B",
+          postedBy: "Prof. K. V. Rao",
+          done: false,
+        },
+        {
+          id: 2,
+          title: "Java Lab Record: Experiments 1 & 2 Observation",
+          subject: "JAVA",
+          due: "Today, 5:00 PM",
+          submitTo: "Lab 2 during Practical",
+          section: "Section B",
+          postedBy: "Rahul Varma (1st CR)",
+          done: true,
+        },
+        {
+          id: 3,
+          title: "CN Subnetting Numericals Worksheet",
+          subject: "CN",
+          due: "Nov 16",
+          submitTo: "Prof. M. Reddy",
+          section: "Section B",
+          postedBy: "Prof. M. Reddy",
+          done: false,
+        },
+        {
+          id: 4,
+          title: "OS CPU Scheduling Gantt Charts",
+          subject: "OS",
+          due: "Nov 15",
+          submitTo: "Prof. S. Sharma",
+          section: "Section A",
+          postedBy: "Prof. S. Sharma",
+          done: false,
+        },
+      ];
+
+      const subjectsData = [
+        {
+          id: "dbms",
+          type: "theory",
+          name: "Database Management Systems (DBMS)",
+          modules: [
+            {
+              id: 1,
+              title: "Module 1: Introduction to DBMS & ER Model",
+              materials: {
+                "Section B": {
+                  filename: "DBMS_Mod1_ProfRao_SecB.pptx",
+                  slides: [
+                    {
+                      title: "Introduction to Database Systems",
+                      bullets: [
+                        "Database: Persistent collection of logically related entities.",
+                        "DBMS: Engine ensuring atomicity, concurrency, and security.",
+                        "Eliminates file system redundancy and inconsistency.",
+                      ],
+                      diagram: "[Application] ➔ [DBMS Engine] ➔ [Storage]",
+                    },
+                    {
+                      title: "Three-Level ANSI-SPARC Architecture",
+                      bullets: [
+                        "Physical Level: Disk block offsets and file structures.",
+                        "Logical Level: Conceptual entity relationships and constraints.",
+                        "View Level: Tailored security representations for end-users.",
+                      ],
+                      diagram:
+                        "[View Schema] ➔ [Conceptual Schema] ➔ [Internal Storage]",
+                    },
+                  ],
+                },
+                "Section A": {
+                  filename: "DBMS_Mod1_ProfRao_SecA.pptx",
+                  slides: [
+                    {
+                      title: "DBMS Core Fundamentals (Sec A)",
+                      bullets: [
+                        "Data abstraction layers and independence.",
+                        "Integrity constraints: Domain, Key, Referential integrity.",
+                      ],
+                      diagram:
+                        "[Client Query] ➔ [Parser & Optimizer] ➔ [Execution Engine]",
+                    },
+                  ],
+                },
+              },
+              synopsis: {
+                filename: "DBMS_Mod1_Complete_Synopsis.pdf",
+                title: "Module 1 - Complete Synopsis & Revision Guide",
+                slides: [
+                  {
+                    title: "1. Core Definitions & Architecture",
+                    bullets: [
+                      "Data Independence: Logical independence insulates user views from schema changes; Physical independence insulates conceptual schema from storage hardware shifts.",
+                      "Three-Schema Levels: External (User Views) ➔ Conceptual (Logical Tables) ➔ Internal (Disk Blocks).",
+                      "Database Administrator (DBA): Controls schema definition, storage allocation, and authorization.",
+                    ],
+                    diagram:
+                      "External Level ➔ Conceptual Level ➔ Physical Level",
+                  },
+                  {
+                    title: "2. ER Modeling & Keys Rules",
+                    bullets: [
+                      "Strong Entity vs Weak Entity: Weak entity lacks its own primary key and depends on an identifying owner entity (double diamond).",
+                      "Keys Hierarchy: Super Key (any unique set) ⊃ Candidate Key (minimal super key) ⊃ Primary Key (chosen candidate key, NOT NULL).",
+                      "Cardinality Ratios: 1:1, 1:N, M:N dictate foreign key placement during table reduction.",
+                    ],
+                    diagram: "Super Key ⊃ Candidate Key ⊃ Primary Key",
+                  },
+                  {
+                    title: "3. Exam & Viva Pointers",
+                    bullets: [
+                      "Always underline primary key attributes in ER diagrams and use dashed underlines for weak entity discriminators.",
+                      "Multi-valued attributes (double ellipse) always map to a separate table in relational reduction.",
+                    ],
+                    diagram:
+                      "Exam Focus: 3-Schema Diagram & Hospital/University ER Design",
+                  },
+                ],
+              },
+              pyq: {
+                filename: "DBMS_Mod1_PYQ.pdf",
+                title: "Module 1 - PYQs & Blueprint",
+                slides: [
+                  {
+                    title: "Frequently Tested Questions (10 Marks)",
+                    bullets: [
+                      "Q1: Explain 3-Schema Architecture with clean diagrams (Repeated: 2023, 2024, 2025).",
+                      "Q2: Design an ER diagram for a Hospital Management system with cardinality ratios.",
+                    ],
+                    diagram: "Weightage: 10 Marks (Part B)",
+                  },
+                ],
+              },
+              quiz: [
+                {
+                  q: "Which of the following is NOT a component of DBMS?",
+                  options: [
+                    "Software",
+                    "Hardware",
+                    "Database Schema",
+                    "Compiler",
+                  ],
+                  ans: 3,
+                },
+                {
+                  q: "An entity type with no primary key of its own is called:",
+                  options: [
+                    "Weak Entity",
+                    "Strong Entity",
+                    "Composite Entity",
+                    "Recursive Entity",
+                  ],
+                  ans: 0,
+                },
+                {
+                  q: "In an ER diagram, attributes are represented by:",
+                  options: ["Rectangles", "Ellipses", "Diamonds", "Lines"],
+                  ans: 1,
+                },
+                {
+                  q: "Data abstraction layer closest to physical storage is:",
+                  options: [
+                    "View Level",
+                    "Logical Level",
+                    "Physical Level",
+                    "Conceptual Level",
+                  ],
+                  ans: 2,
+                },
+                {
+                  q: "Which key uniquely identifies a record in a table?",
+                  options: [
+                    "Foreign Key",
+                    "Super Key",
+                    "Candidate Key",
+                    "Primary Key",
+                  ],
+                  ans: 3,
+                },
+              ],
+            },
+            {
+              id: 2,
+              title: "Module 2: Relational Model & Relational Algebra",
+              materials: {
+                "Section B": {
+                  filename: "DBMS_Mod2_RelationalAlgebra_SecB.pptx",
+                  slides: [
+                    {
+                      title: "Relational Algebra Fundamentals",
+                      bullets: [
+                        "Select (σ): Row filter; Project (π): Column projection with set deduplication.",
+                        "Set operations: Union, Intersection, Set Difference.",
+                        "Join operations: Theta join, Natural join, Outer joins.",
+                      ],
+                      diagram: "Query ➔ [Relational Operators] ➔ Result Table",
+                    },
+                  ],
+                },
+              },
+              synopsis: {
+                filename: "DBMS_Mod2_Complete_Synopsis.pdf",
+                title: "Module 2 - Relational Algebra & Calculus Synopsis",
+                slides: [
+                  {
+                    title: "1. Fundamental vs Derived Operators",
+                    bullets: [
+                      "Fundamental (6): Selection (σ), Projection (π), Union (∪), Set Difference (-), Cartesian Product (×), Rename (ρ).",
+                      "Derived: Intersection (∩), Natural Join (⋈), Division (÷).",
+                      "Union Compatibility: Both relations must have identical arity (column count) and compatible attribute domains.",
+                    ],
+                    diagram: "R ∩ S = R - (R - S)",
+                  },
+                  {
+                    title: "2. Joins & Division Logic",
+                    bullets: [
+                      "Natural Join (R ⋈ S): Equi-join on all common attributes with duplicate columns eliminated.",
+                      "Outer Joins (Left, Right, Full): Retain unmatched tuples padded with NULLs.",
+                      "Division (R ÷ S): Used for 'for all' queries (e.g., students enrolled in ALL courses).",
+                    ],
+                    diagram: "Division: π_x(R) - π_x((π_x(R) × S) - R)",
+                  },
+                ],
+              },
+              pyq: {
+                filename: "DBMS_Mod2_PYQ.pdf",
+                title: "Module 2 - PYQs & Blueprint",
+                slides: [
+                  {
+                    title: "Frequently Tested Questions (10 Marks)",
+                    bullets: [
+                      "Q1: Given schemas Employee and Dept, write relational algebra for 5 queries.",
+                      "Q2: Define TRC and DRC with formal syntax.",
+                    ],
+                    diagram: "Weightage: 10 Marks (Part B)",
+                  },
+                ],
+              },
+              quiz: [
+                {
+                  q: "Which operation selects tuples satisfying a condition?",
+                  options: [
+                    "Project (π)",
+                    "Select (σ)",
+                    "Cartesian Product (×)",
+                    "Union (∪)",
+                  ],
+                  ans: 1,
+                },
+                {
+                  q: "Projection (π) in relational algebra extracts:",
+                  options: [
+                    "Specific Columns",
+                    "Specific Rows",
+                    "All Distinct Keys",
+                    "Cross Join",
+                  ],
+                  ans: 0,
+                },
+                {
+                  q: "Which operator is fundamental in Relational Algebra?",
+                  options: [
+                    "Natural Join",
+                    "Intersection",
+                    "Cartesian Product",
+                    "Division",
+                  ],
+                  ans: 2,
+                },
+                {
+                  q: "Tuple Relational Calculus is a:",
+                  options: [
+                    "Procedural Language",
+                    "Non-Procedural Language",
+                    "OOP Language",
+                    "Assembly Code",
+                  ],
+                  ans: 1,
+                },
+                {
+                  q: "What ensures referential integrity in relational tables?",
+                  options: [
+                    "Primary Key",
+                    "Foreign Key",
+                    "Check Constraint",
+                    "Unique Index",
+                  ],
+                  ans: 1,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "os",
+          type: "theory",
+          name: "Operating Systems (OS)",
+          modules: [
+            {
+              id: 1,
+              title: "Module 1: OS Overview & System Calls",
+              materials: {
+                "Section B": {
+                  filename: "OS_Mod1_Kernel_Architecture_SecB.pptx",
+                  slides: [
+                    {
+                      title: "Operating System Architecture",
+                      bullets: [
+                        "Resource allocator and control program.",
+                        "Dual-mode CPU operation: User mode vs Kernel mode.",
+                        "System call execution via software traps.",
+                      ],
+                      diagram:
+                        "User App ➔ Syscall ➔ [Trap to Kernel Mode] ➔ Hardware",
+                    },
+                  ],
+                },
+              },
+              synopsis: {
+                filename: "OS_Mod1_Complete_Synopsis.pdf",
+                title: "Module 1 - Kernel & Process Architecture Synopsis",
+                slides: [
+                  {
+                    title: "1. Dual-Mode & System Calls",
+                    bullets: [
+                      "User Mode (Mode Bit 1) restricts direct hardware and memory access; Kernel Mode (Mode Bit 0) allows privileged instructions.",
+                      "System Calls (fork, exec, wait, open, read) trigger a software interrupt (trap) to switch into Kernel Mode.",
+                    ],
+                    diagram: "User Mode (1) ──[Trap]──➔ Kernel Mode (0)",
+                  },
+                  {
+                    title: "2. Process States & PCB",
+                    bullets: [
+                      "5-State Model: New ➔ Ready ⇆ Running ➔ Waiting ➔ Terminated.",
+                      "PCB stores PID, Program Counter, CPU Registers, Memory Pointers, and Open File descriptors.",
+                      "Zombie Process: Finished execution but entry remains in process table until parent calls wait().",
+                    ],
+                    diagram: "Context Switch Latency = Pure Overhead",
+                  },
+                ],
+              },
+              pyq: {
+                filename: "OS_Mod1_PYQ.pdf",
+                title: "Module 1 - PYQs & Blueprint",
+                slides: [
+                  {
+                    title: "Frequently Tested Questions (10 Marks)",
+                    bullets: [
+                      "Q1: Draw and explain the 5-State Process Model with transitions.",
+                      "Q2: Compare Monolithic and Microkernel architectures.",
+                    ],
+                    diagram: "Weightage: 10 Marks",
+                  },
+                ],
+              },
+              quiz: [
+                {
+                  q: "Which system call creates a new process in Unix?",
+                  options: ["fork()", "exec()", "create()", "spawn()"],
+                  ans: 0,
+                },
+                {
+                  q: "Dual-mode operation protects the system by separating:",
+                  options: [
+                    "User mode and Kernel mode",
+                    "CPU and RAM",
+                    "Cache and Disk",
+                    "Read and Write",
+                  ],
+                  ans: 0,
+                },
+                {
+                  q: "Which component coordinates all system resources?",
+                  options: [
+                    "Compiler",
+                    "Operating System Kernel",
+                    "Linker",
+                    "Loader",
+                  ],
+                  ans: 1,
+                },
+                {
+                  q: "A process control block (PCB) stores:",
+                  options: [
+                    "CPU registers and state",
+                    "Only source code",
+                    "Compiler flags",
+                    "Browser cookies",
+                  ],
+                  ans: 0,
+                },
+                {
+                  q: "Trap is a software-generated:",
+                  options: [
+                    "Signal/Interrupt",
+                    "Syntax Error",
+                    "Deadlock",
+                    "Context switch",
+                  ],
+                  ans: 0,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "cn",
+          type: "theory",
+          name: "Computer Networks (CN)",
+          modules: [
+            {
+              id: 1,
+              title: "Module 1: Reference Models & Physical Layer",
+              materials: {
+                "Section B": {
+                  filename: "CN_Mod1_OSI_vs_TCPIP_SecB.pptx",
+                  slides: [
+                    {
+                      title: "Reference Models Architecture",
+                      bullets: [
+                        "OSI 7-Layer vs TCP/IP 4-Layer model.",
+                        "Encapsulation: Bits ➔ Frames ➔ Packets ➔ Segments ➔ Data.",
+                      ],
+                      diagram:
+                        "[Application] ➔ [TCP] ➔ [IP] ➔ [Data Link Frame]",
+                    },
+                  ],
+                },
+              },
+              synopsis: {
+                filename: "CN_Mod1_Complete_Synopsis.pdf",
+                title: "Module 1 - OSI/TCP-IP & Channel Capacity Synopsis",
+                slides: [
+                  {
+                    title: "1. OSI 7-Layer vs TCP/IP Stack",
+                    bullets: [
+                      "Physical (Bits), Data Link (Frames, MAC), Network (Packets, IP), Transport (Segments, TCP/UDP), Session, Presentation, Application.",
+                      "TCP/IP merges Session and Presentation into the Application Layer.",
+                    ],
+                    diagram: "PDU: Data ➔ Segment ➔ Packet ➔ Frame ➔ Bits",
+                  },
+                  {
+                    title: "2. Channel Capacity Laws",
+                    bullets: [
+                      "Nyquist Bit Rate (Noiseless): MaxRate = 2 * B * log2(V) bps.",
+                      "Shannon Capacity (Noisy): C = B * log2(1 + S/N) bps, where S/N is linear signal-to-noise ratio.",
+                    ],
+                    diagram: "SNR_dB = 10 * log10(S/N)",
+                  },
+                ],
+              },
+              pyq: {
+                filename: "CN_Mod1_PYQ.pdf",
+                title: "Module 1 - PYQs & Blueprint",
+                slides: [
+                  {
+                    title: "Frequently Tested Questions (10 Marks)",
+                    bullets: [
+                      "Q1: Compare OSI and TCP/IP reference models with neat sketches.",
+                      "Q2: Calculate Shannon channel capacity for given bandwidth and SNR.",
+                    ],
+                    diagram: "Weightage: 10 Marks",
+                  },
+                ],
+              },
+              quiz: [
+                {
+                  q: "How many layers are in the ISO-OSI Reference Model?",
+                  options: ["4", "5", "7", "6"],
+                  ans: 2,
+                },
+                {
+                  q: "Which layer is responsible for end-to-end reliable transmission?",
+                  options: ["Network", "Transport", "Data Link", "Physical"],
+                  ans: 1,
+                },
+                {
+                  q: "Which device operates at the Physical layer of OSI?",
+                  options: ["Router", "Repeater / Hub", "Switch", "Gateway"],
+                  ans: 1,
+                },
+                {
+                  q: "Data units at the Data Link layer are called:",
+                  options: ["Packets", "Frames", "Segments", "Bits"],
+                  ans: 1,
+                },
+                {
+                  q: "Which transmission media offers highest immunity to EMI?",
+                  options: [
+                    "Twisted Pair",
+                    "Coaxial Cable",
+                    "Optical Fiber",
+                    "Microwave",
+                  ],
+                  ans: 2,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "daa",
+          type: "theory",
+          name: "Design & Analysis of Algorithms (DAA)",
+          modules: [
+            {
+              id: 1,
+              title: "Module 1: Asymptotic Notations & Divide-and-Conquer",
+              materials: {
+                "Section B": {
+                  filename: "DAA_Mod1_Asymptotics_DC_SecB.pptx",
+                  slides: [
+                    {
+                      title: "Algorithm Analysis & Notations",
+                      bullets: [
+                        "Big-O (Upper Bound), Omega (Lower Bound), Theta (Tight Bound).",
+                        "Master Theorem: T(n) = aT(n/b) + f(n) cases.",
+                      ],
+                      diagram:
+                        "O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(2^n)",
+                    },
+                  ],
+                },
+              },
+              synopsis: {
+                filename: "DAA_Mod1_Complete_Synopsis.pdf",
+                title: "Module 1 - Asymptotics & Master Theorem Synopsis",
+                slides: [
+                  {
+                    title: "1. Asymptotic Bounds & Master Theorem",
+                    bullets: [
+                      "Big-O: Worst-case upper bound; Omega: Best-case lower bound; Theta: Tight bound.",
+                      "Master Theorem for T(n) = aT(n/b) + O(n^d): Compare d with log_b(a).",
+                      "If d < log_b(a) ➔ O(n^log_b(a)); If d == log_b(a) ➔ O(n^d log n); If d > log_b(a) ➔ O(n^d).",
+                    ],
+                    diagram: "Binary Search: a=1, b=2, d=0 ➔ O(log n)",
+                  },
+                ],
+              },
+              pyq: {
+                filename: "DAA_Mod1_PYQ.pdf",
+                title: "Module 1 - PYQs & Blueprint",
+                slides: [
+                  {
+                    title: "Frequently Tested Questions (10 Marks)",
+                    bullets: [
+                      "Q1: State and prove Master Theorem with 3 solved examples.",
+                      "Q2: Trace Quick Sort and derive worst-case recurrence relation.",
+                    ],
+                    diagram: "Weightage: 10 Marks",
+                  },
+                ],
+              },
+              quiz: [
+                {
+                  q: "Time complexity of Merge Sort in all cases is:",
+                  options: [
+                    "$O(n)$",
+                    "$O(n \\log n)$",
+                    "$O(n^2)$",
+                    "$O(\\log n)$",
+                  ],
+                  ans: 1,
+                },
+                {
+                  q: "Which notation represents the tight asymptotic bound?",
+                  options: [
+                    "Big-O ($O$)",
+                    "Omega ($\\Omega$)",
+                    "Theta ($\\Theta$)",
+                    "Little-o ($o$)",
+                  ],
+                  ans: 2,
+                },
+                {
+                  q: "Worst-case time complexity of standard Quick Sort is:",
+                  options: ["$O(n \\log n)$", "$O(n)$", "$O(n^2)$", "$O(2^n)$"],
+                  ans: 2,
+                },
+                {
+                  q: "Master Theorem applies to recurrences of form:",
+                  options: [
+                    "$T(n) = aT(n-1) + c$",
+                    "$T(n) = aT(n/b) + f(n)$",
+                    "$T(n) = T(n-1) + T(n-2)$",
+                    "$T(n) = nT(n-1)$",
+                  ],
+                  ans: 1,
+                },
+                {
+                  q: "Which sorting algorithm is comparison-free and runs in linear time?",
+                  options: [
+                    "Quick Sort",
+                    "Heap Sort",
+                    "Counting Sort",
+                    "Merge Sort",
+                  ],
+                  ans: 2,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "java",
+          type: "theory",
+          name: "Java & Object-Oriented Programming (Java)",
+          modules: [
+            {
+              id: 1,
+              title: "Module 1: Java Architecture & OOP Fundamentals",
+              materials: {
+                "Section B": {
+                  filename: "Java_Mod1_OOP_JVM_SecB.pptx",
+                  slides: [
+                    {
+                      title: "Java Platform Architecture",
+                      bullets: [
+                        "JDK vs JRE vs JVM breakdown.",
+                        "Bytecode execution via JIT compiler.",
+                      ],
+                      diagram:
+                        "Java Source (.java) ➔ [javac] ➔ Bytecode (.class) ➔ [JVM]",
+                    },
+                  ],
+                },
+              },
+              synopsis: {
+                filename: "Java_Mod1_Complete_Synopsis.pdf",
+                title: "Module 1 - JVM Architecture & Memory Synopsis",
+                slides: [
+                  {
+                    title: "1. JVM Subsystems & Memory Model",
+                    bullets: [
+                      "ClassLoader Subsystem loads, links, and initializes .class bytecode.",
+                      "Runtime Data Areas: Method Area (class metadata), Heap (objects), JVM Stack (local primitives & call frames).",
+                      "JIT Compiler optimizes hot bytecode loops into native machine code at runtime.",
+                    ],
+                    diagram: "Stack (References) ──➔ Heap (Object Instances)",
+                  },
+                ],
+              },
+              pyq: {
+                filename: "Java_Mod1_PYQ.pdf",
+                title: "Module 1 - PYQs & Blueprint",
+                slides: [
+                  {
+                    title: "Frequently Tested Questions (10 Marks)",
+                    bullets: [
+                      "Q1: Explain JVM Architecture with neat block diagram.",
+                      "Q2: Differentiate between Method Overloading and Method Overriding.",
+                    ],
+                    diagram: "Weightage: 10 Marks",
+                  },
+                ],
+              },
+              quiz: [
+                {
+                  q: "Which component of Java converts bytecode into native machine instructions?",
+                  options: [
+                    "Javac",
+                    "JIT Compiler inside JVM",
+                    "JDK Header",
+                    "Appletviewer",
+                  ],
+                  ans: 1,
+                },
+                {
+                  q: "In Java, object instances are dynamically allocated inside:",
+                  options: [
+                    "Stack Memory",
+                    "Heap Memory",
+                    "Code Segment",
+                    "Register Cache",
+                  ],
+                  ans: 1,
+                },
+                {
+                  q: "What is the default initial value of an uninitialized instance boolean variable in Java?",
+                  options: ["true", "false", "null", "-1"],
+                  ans: 1,
+                },
+                {
+                  q: "Which keyword prevents class inheritance in Java?",
+                  options: ["static", "abstract", "final", "const"],
+                  ans: 2,
+                },
+                {
+                  q: "Can a static method in Java access non-static instance variables directly?",
+                  options: [
+                    "Yes",
+                    "No",
+                    "Only if protected",
+                    "Only inside main()",
+                  ],
+                  ans: 1,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "dbms_lab",
+          type: "lab",
+          name: "DBMS Practical Lab & Viva",
+          modules: [
+            {
+              id: 1,
+              title: "Lab Experiment 1: DDL, DML & Integrity Constraints",
+              materials: {
+                "Section B": {
+                  filename: "DBMS_Lab1_DDL_DML_SecB.pdf",
+                  slides: [
+                    {
+                      title: "Experiment 1: SQL Schema Setup",
+                      bullets: [
+                        "Creating tables with PRIMARY KEY, FOREIGN KEY, NOT NULL, CHECK, UNIQUE.",
+                        "DML Commands: INSERT, UPDATE, DELETE with WHERE predicates.",
+                      ],
+                      diagram:
+                        "CREATE TABLE Student (sid INT PRIMARY KEY, sname VARCHAR(50));",
+                    },
+                  ],
+                },
+              },
+              synopsis: {
+                filename: "DBMS_Lab1_Complete_Synopsis.pdf",
+                title: "Lab 1 - Complete SQL & Viva Synopsis",
+                slides: [
+                  {
+                    title: "1. DDL vs DML & Key Viva Questions",
+                    bullets: [
+                      "DDL (CREATE, ALTER, DROP, TRUNCATE) auto-commits and alters schema structure.",
+                      "DML (INSERT, UPDATE, DELETE) manipulates rows and supports ROLLBACK.",
+                      "TRUNCATE vs DELETE: TRUNCATE deallocates data pages instantly without row-by-row logging; WHERE clause cannot be used with TRUNCATE.",
+                    ],
+                    diagram:
+                      "ON DELETE CASCADE removes child rows automatically",
+                  },
+                ],
+              },
+              pyq: {
+                filename: "DBMS_Lab1_ExamTasks.pdf",
+                title: "Lab 1 - Lab Exam Problem Tasks",
+                slides: [
+                  {
+                    title: "Lab Exam Task (25 Marks)",
+                    bullets: [
+                      "Task: Create Employee and Project tables with ON DELETE CASCADE.",
+                      "Demonstrate foreign key violation rejection.",
+                    ],
+                    diagram: "Execution (15M) + Viva (10M)",
+                  },
+                ],
+              },
+              quiz: [
+                {
+                  q: "Which command deletes all records without removing table structure?",
+                  options: ["DROP", "DELETE", "TRUNCATE", "REMOVE"],
+                  ans: 2,
+                },
+                {
+                  q: "Which SQL constraint prevents null entries and duplicate values?",
+                  options: ["DEFAULT", "PRIMARY KEY", "CHECK", "FOREIGN KEY"],
+                  ans: 1,
+                },
+                {
+                  q: "ON DELETE CASCADE ensures child records are:",
+                  options: [
+                    "Protected",
+                    "Deleted automatically when parent is deleted",
+                    "Converted to NULL",
+                    "Flagged",
+                  ],
+                  ans: 1,
+                },
+                {
+                  q: "ALTER command belongs to which SQL category?",
+                  options: ["DML", "DDL", "DCL", "TCL"],
+                  ans: 1,
+                },
+                {
+                  q: "Which operator matches character strings in SQL?",
+                  options: ["LIKE", "IN", "EQUAL", "MATCH"],
+                  ans: 0,
+                },
+              ],
+            },
+          ],
+        },
+      ];
+
+      // Global State
+      let currentUser = null;
+      let isDarkMode = false;
+      let activeTab = "desk";
+      let courseTypeFilter = "theory";
+      let selectedSubjectId = "dbms";
+      let selectedSectionView = "Section B";
+      let authError = "";
+      let searchQuery = "";
+      let synopsisView = false;
+
+      let offlineSavedFiles = [
+        {
+          filename: "DBMS_Mod1_Complete_Synopsis.pdf",
+          title: "Module 1 - Complete Synopsis & Revision Guide",
+          slides: subjectsData[0].modules[0].synopsis.slides,
+        },
+        {
+          filename: "DBMS_Mod1_PYQ.pdf",
+          title: "Module 1 - PYQs & Blueprint",
+          slides: subjectsData[0].modules[0].pyq.slides,
+        },
+      ];
+
+      let activeReaderData = null;
+      let isSettingsOpen = false;
+      let isOfflineModalOpen = false;
+      let isAddAssignmentOpen = false;
+      let activeQuizData = null;
+      let quizAnswers = {};
+      let quizSubmitted = false;
+      let activeDoubtModule = null;
+
+      // Reschedule Modal State
+      // { type: 'class' | 'exam', facId?, sec?, slotIdx?, examId?, subIdx?, title, originalDetails }
+      let activeRescheduleModal = null;
+      let rescheduleMode = "now"; // "now" | "tba"
+
+      function applyTheme() {
+        const root = document.getElementById("bodyRoot");
+        if (isDarkMode) {
+          root.classList.add("dark");
+          root.classList.replace("bg-slate-50", "bg-slate-950");
+          root.classList.replace("text-slate-900", "text-slate-100");
+        } else {
+          root.classList.remove("dark");
+          root.classList.replace("bg-slate-950", "bg-slate-50");
+          root.classList.replace("text-slate-100", "text-slate-900");
+        }
+      }
+
+      function getStudentRecord(rollNo) {
+        return authorizedStudentsDB.find((s) => s.rollNo === rollNo);
+      }
+
+      function isSectionInCharge(user) {
+        return (
+          user &&
+          user.role === "teacher" &&
+          sectionAdvisors[user.section] === user.facultyId
+        );
+      }
+
+      function render() {
+        applyTheme();
+        const root = document.getElementById("app");
+
+        // ==========================================
+        // 1. VERIFIED AUTHENTICATION SCREEN
+        // ==========================================
+        if (!currentUser) {
+          root.innerHTML = `
+          <div class="flex items-center justify-center min-h-[85vh]">
+            <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl w-full max-w-lg border border-slate-200 dark:border-slate-800">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-blue-600 dark:text-blue-400 text-2xl font-bold">🎓 CampusConnect</span>
+              </div>
+              <p class="text-slate-500 dark:text-slate-400 text-sm mb-5">Institutional Access Verification Portal</p>
+
+              <div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-5">
+                <button type="button" id="roleBtnStudent" onclick="switchRegRole('student')" class="w-1/2 py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm">
+                  👨‍🎓 Student Login
+                </button>
+                <button type="button" id="roleBtnTeacher" onclick="switchRegRole('teacher')" class="w-1/2 py-2 text-xs font-bold rounded-lg transition text-slate-600 dark:text-slate-400">
+                  👨‍🏫 Faculty Login
+                </button>
+              </div>
+
+              ${
+                authError
+                  ? `
+                <div class="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 rounded-xl text-xs font-semibold mb-4 flex items-center gap-2">
+                  <span>⚠️</span> ${authError}
+                </div>
+              `
+                  : ""
+              }
+
+              <form id="studentAuthForm" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">College Roll Number</label>
+                  <input required id="stRollInput" type="text" placeholder="e.g. 23VV1A4205" value="23VV1A4205" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none uppercase font-mono tracking-wider" />
+                  <p class="text-[11px] text-slate-400 mt-1">CR status & section permissions are automatically verified from ERP records.</p>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg text-sm transition mt-2 shadow-md">
+                  Verify & Enter Student Hub →
+                </button>
+              </form>
+
+              <form id="teacherAuthForm" class="space-y-4 hidden">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase mb-1">Faculty ID (Teacher ID)</label>
+                  <input required id="trIdInput" type="text" placeholder="e.g. FAC_CSE_101" value="FAC_CSE_101" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none uppercase font-mono tracking-wider" />
+                  <p class="text-[11px] text-slate-400 mt-1">Cross-referenced against department faculty & Class Advisor records.</p>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-lg text-sm transition mt-2 shadow-md">
+                  Verify & Enter Faculty Portal →
+                </button>
+              </form>
+
+              <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+                <div class="font-bold text-[11px] uppercase tracking-wider text-slate-400 mb-1.5">Quick Test Credentials (Click to Fill):</div>
+                <div class="flex flex-wrap gap-1.5 font-mono text-[10px]">
+                  <span class="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded cursor-pointer hover:bg-blue-100" onclick="fillCredential('23VV1A4215', 'student')">23VV1A4215 (1st CR)</span>
+                  <span class="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded cursor-pointer hover:bg-blue-100" onclick="fillCredential('23VV1A4201', 'student')">23VV1A4201 (2nd CR)</span>
+                  <span class="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded cursor-pointer hover:bg-blue-100" onclick="fillCredential('23VV1A4218', 'student')">23VV1A4218 (Student)</span>
+                  <span class="bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded cursor-pointer hover:bg-purple-100" onclick="fillCredential('FAC_CSE_101', 'teacher')">FAC_CSE_101 (Teaches A,B,C • In-Charge B)</span>
+                  <span class="bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded cursor-pointer hover:bg-blue-100" onclick="fillCredential('FAC_CSE_103', 'teacher')">FAC_CSE_103 (Teaches B,D • In-Charge C)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+          document
+            .getElementById("studentAuthForm")
+            .addEventListener("submit", (e) => {
+              e.preventDefault();
+              authError = "";
+              const inputRoll = document
+                .getElementById("stRollInput")
+                .value.trim()
+                .toUpperCase();
+              const studentRecord = getStudentRecord(inputRoll);
+              if (!studentRecord) {
+                authError = `Access Denied: Roll Number "${inputRoll}" is not registered in the CSE Department database.`;
+                render();
+                return;
+              }
+
+              currentUser = {
+                role: "student",
+                name: studentRecord.name,
+                rollNo: studentRecord.rollNo,
+                sex: studentRecord.sex,
+                branch: studentRecord.branch,
+                section: studentRecord.section,
+              };
+              selectedSectionView = studentRecord.section;
+              render();
+            });
+
+          document
+            .getElementById("teacherAuthForm")
+            .addEventListener("submit", (e) => {
+              e.preventDefault();
+              authError = "";
+              const inputFacultyId = document
+                .getElementById("trIdInput")
+                .value.trim()
+                .toUpperCase();
+              const facultyRecord = authorizedFacultyDB.find(
+                (f) => f.id === inputFacultyId,
+              );
+              if (!facultyRecord) {
+                authError = `Access Denied: Faculty ID "${inputFacultyId}" does not exist in the institutional registry.`;
+                render();
+                return;
+              }
+
+              // Combine sections taught + in-charge section so professor can switch across all of them
+              const allManagedSections = Array.from(
+                new Set([
+                  ...(facultyRecord.inChargeOf
+                    ? [facultyRecord.inChargeOf]
+                    : []),
+                  ...facultyRecord.sections,
+                ]),
+              );
+
+              currentUser = {
+                role: "teacher",
+                name: facultyRecord.name,
+                facultyId: facultyRecord.id,
+                branch: facultyRecord.branch,
+                subject: facultyRecord.subject,
+                inChargeOf: facultyRecord.inChargeOf,
+                section:
+                  facultyRecord.inChargeOf ||
+                  allManagedSections[0] ||
+                  "Section B",
+                allowedSections: allManagedSections,
+              };
+              selectedSectionView = currentUser.section;
+              render();
+            });
+
+          return;
+        }
+
+        let liveCrRole = "none";
+        if (currentUser.role === "student") {
+          const freshRec = getStudentRecord(currentUser.rollNo);
+          liveCrRole = freshRec ? freshRec.crRole : "none";
+        }
+
+        const amIInCharge = isSectionInCharge(currentUser);
+        const canUploadNotes =
+          currentUser.role === "teacher" ||
+          liveCrRole === "1st CR" ||
+          liveCrRole === "2nd CR";
+        const canAddAssignments =
+          currentUser.role === "teacher" || liveCrRole === "1st CR";
+
+        // ==========================================
+        // 2. MAIN APP SHELL
+        // ==========================================
+        let contentHtml = "";
+
+        // TAB 1: EXAM DESK (Strictly Locked to Active Home/Teaching Section)
+        if (activeTab === "desk") {
+          const homeSec = currentUser.section;
+          const sectionFaculty = authorizedFacultyDB.filter((f) =>
+            f.sections.includes(homeSec),
+          );
+          const sectionAssignments = assignmentsList.filter(
+            (a) => a.section === homeSec,
+          );
+          const sectionCRs = authorizedStudentsDB.filter(
+            (s) => s.section === homeSec && s.crRole !== "none",
+          );
+          const activeExamEvents = sectionExamsDB[homeSec] || [];
+
+          const examsHtml = activeExamEvents
+            .map(
+              (exam) => `
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-extrabold text-slate-900 dark:text-slate-100 text-base">${exam.examName}</h3>
+                  <span class="text-[11px] bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold px-2.5 py-0.5 rounded-full">
+                    ${homeSec}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">${exam.dateRange} • ${exam.mode}</p>
+              </div>
+              <div class="bg-slate-50 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-right">
+                <div class="text-xs font-extrabold text-slate-800 dark:text-slate-100">${exam.totalMarks}</div>
+                <div class="text-[10px] text-slate-500 dark:text-slate-400">${exam.pattern}</div>
+              </div>
+            </div>
+
+            <div class="mt-3 divide-y divide-slate-100 dark:divide-slate-800">
+              ${exam.subjects
+                .map((sub, sIdx) => {
+                  const canEditThisExam =
+                    amIInCharge ||
+                    (currentUser.role === "teacher" &&
+                      currentUser.subject === sub.code);
+                  const isChanged =
+                    sub.status === "Rescheduled" || sub.status === "Cancelled";
+                  return `
+                  <div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                    <div>
+                      <div class="flex items-center gap-2">
+                        <span class="font-mono font-bold text-blue-600 dark:text-blue-400 w-12">${sub.code}</span>
+                        <span class="font-semibold text-slate-800 dark:text-slate-200 ${sub.status === "Cancelled" ? "line-through text-slate-400" : ""}">${sub.name}</span>
+                      </div>
+                      <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 sm:pl-14">${sub.syllabus}</div>
+                    </div>
+
+                    <div class="flex flex-col sm:items-end gap-1 text-[11px]">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-bold px-2 py-0.5 rounded ${isChanged ? "line-through text-slate-400 bg-slate-100 dark:bg-slate-800" : "text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800"}">
+                          ${sub.date} • ${sub.time}
+                        </span>
+                        
+                        ${
+                          canEditThisExam
+                            ? `
+                          <select onchange="handleExamStatusSelect('${homeSec}', '${exam.id}', ${sIdx}, this.value)" class="border dark:border-slate-700 rounded px-1.5 py-0.5 text-[10px] font-bold bg-white dark:bg-slate-800">
+                            <option value="On Schedule" ${sub.status === "On Schedule" ? "selected" : ""}>On Schedule</option>
+                            <option value="Rescheduled" ${sub.status === "Rescheduled" ? "selected" : ""}>Rescheduled...</option>
+                            <option value="Cancelled" ${sub.status === "Cancelled" ? "selected" : ""}>Cancelled</option>
+                          </select>
+                        `
+                            : sub.status === "Cancelled"
+                              ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300">Cancelled</span>`
+                              : ""
+                        }
+                      </div>
+
+                      <!-- Rescheduled Exam Detail Pill -->
+                      ${
+                        sub.status === "Rescheduled"
+                          ? `
+                        <div class="text-[10px] font-bold px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-amber-950/70 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800">
+                          ${
+                            sub.rescheduleInfo &&
+                            sub.rescheduleInfo.mode === "now"
+                              ? `➔ New Schedule: ${sub.rescheduleInfo.newDay} • ${sub.rescheduleInfo.newTime}${sub.rescheduleInfo.newRoom ? " (" + sub.rescheduleInfo.newRoom + ")" : ""}`
+                              : `➔ Rescheduled: New schedule yet to be changed (TBA)`
+                          }
+                        </div>
+                      `
+                          : ""
+                      }
+                    </div>
+                  </div>
+                `;
+                })
+                .join("")}
+            </div>
+          </div>
+        `,
+            )
+            .join("");
+
+          const assignmentsHtml =
+            sectionAssignments.length > 0
+              ? sectionAssignments
+                  .map(
+                    (item) => `
+          <label class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 flex items-start gap-3 cursor-pointer hover:bg-slate-100/80 dark:hover:bg-slate-800 transition">
+            <input type="checkbox" ${item.done ? "checked" : ""} onchange="toggleAssignment(${item.id})" class="mt-0.5 rounded text-blue-600 h-4 w-4" />
+            <div class="flex-1">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-mono font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">${item.subject}</span>
+                  <span class="text-xs font-bold ${item.done ? "line-through text-slate-400" : "text-slate-800 dark:text-slate-100"}">${item.title}</span>
+                </div>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded ${item.done ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300"}">
+                  ${item.done ? "Submitted ✓" : "Due: " + item.due}
+                </span>
+              </div>
+              <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex justify-between">
+                <span>Submit to: ${item.submitTo}</span>
+                <span class="italic">Posted by ${item.postedBy}</span>
+              </div>
+            </div>
+          </label>
+        `,
+                  )
+                  .join("")
+              : `<p class="text-xs text-slate-500">No active assignments or record deadlines for ${homeSec}.</p>`;
+
+          const facultyHtml = sectionFaculty
+            .map((fac) => {
+              const daySlots = fac.schedules[homeSec] || [];
+              const hasClassToday = daySlots.some(
+                (slot) => slot.day === TODAY_DAY,
+              );
+              const canEditThisSchedule =
+                amIInCharge ||
+                (currentUser.role === "teacher" &&
+                  currentUser.facultyId === fac.id);
+
+              return `
+            <div class="p-4 rounded-xl border transition ${hasClassToday ? "bg-emerald-50/30 dark:bg-emerald-950/15 border-emerald-200 dark:border-emerald-900" : "bg-slate-50 dark:bg-slate-800/60 border-slate-100 dark:border-slate-700/60"}">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-200/70 dark:border-slate-700/70">
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-bold text-sm text-slate-900 dark:text-slate-100">${fac.name}</span>
+                    <span class="text-[10px] font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded">${fac.subject}</span>
+                    ${fac.inChargeOf === homeSec ? `<span class="text-[10px] font-bold bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded">Class Professor-in-Charge</span>` : ""}
+                  </div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${fac.subjectFull} • 📍 ${fac.cabin} (${fac.hours})</div>
+                </div>
+              </div>
+
+              <div class="mt-2.5 space-y-2">
+                ${daySlots
+                  .map((slot, slotIdx) => {
+                    const isToday = slot.day === TODAY_DAY;
+                    const isChanged =
+                      slot.status === "Cancelled" ||
+                      slot.status === "Rescheduled";
+                    return `
+                    <div class="flex flex-col gap-1.5 text-xs p-2.5 rounded-lg ${isToday ? "bg-white dark:bg-slate-900 border border-emerald-200 dark:border-emerald-800 shadow-xs" : "bg-white/60 dark:bg-slate-900/40"}">
+                      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="font-bold w-24 ${isToday ? "text-emerald-700 dark:text-emerald-400" : "text-slate-700 dark:text-slate-300"}">
+                            ${slot.day} ${isToday ? "(Today)" : ""}
+                          </span>
+                          <span class="${isChanged ? "line-through text-slate-400" : "text-slate-700 dark:text-slate-200 font-medium"}">${slot.time}</span>
+                          <span class="text-[11px] text-slate-500 ${slot.status === "Room Changed" ? "line-through" : ""}">• ${slot.room}</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                          ${
+                            canEditThisSchedule
+                              ? `
+                            <select onchange="handleClassSlotStatusSelect('${fac.id}', '${homeSec}', ${slotIdx}, this.value)" class="border dark:border-slate-700 rounded px-2 py-0.5 text-[10px] font-bold bg-slate-50 dark:bg-slate-800">
+                              <option value="On Schedule" ${slot.status === "On Schedule" ? "selected" : ""}>On Schedule</option>
+                              <option value="Room Changed" ${slot.status === "Room Changed" ? "selected" : ""}>Room Changed...</option>
+                              <option value="Rescheduled" ${slot.status === "Rescheduled" ? "selected" : ""}>Rescheduled...</option>
+                              <option value="Cancelled" ${slot.status === "Cancelled" ? "selected" : ""}>Cancelled</option>
+                            </select>
+                          `
+                              : `
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${
+                              slot.status === "On Schedule"
+                                ? "text-emerald-700 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-300"
+                                : slot.status === "Cancelled"
+                                  ? "text-rose-700 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-300"
+                                  : "text-amber-700 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-300"
+                            }">${slot.status}</span>
+                          `
+                          }
+                        </div>
+                      </div>
+
+                      <!-- Rescheduled / Room Changed Details Banner -->
+                      ${
+                        slot.status === "Rescheduled" ||
+                        slot.status === "Room Changed"
+                          ? `
+                        <div class="text-[11px] font-bold px-2.5 py-1 rounded-md bg-amber-100/80 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800/80 flex items-center justify-between">
+                          <span>
+                            ${
+                              slot.rescheduleInfo &&
+                              slot.rescheduleInfo.mode === "now"
+                                ? `➔ Updated Schedule: ${slot.rescheduleInfo.newDay} • ${slot.rescheduleInfo.newTime} • ${slot.rescheduleInfo.newRoom}`
+                                : `➔ ${slot.status}: New schedule yet to be changed (TBA)`
+                            }
+                          </span>
+                        </div>
+                      `
+                          : ""
+                      }
+                    </div>
+                  `;
+                  })
+                  .join("")}
+              </div>
+            </div>
+          `;
+            })
+            .join("");
+
+          contentHtml = `
+          <div class="space-y-5">
+            <!-- Section Lock Indicator & Active CRs Bar -->
+            <div class="bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+              <div>
+                <span class="font-bold text-slate-800 dark:text-slate-100">🔒 ${homeSec} Academic Desk</span>
+                <span class="text-slate-500 dark:text-slate-400 block sm:inline sm:ml-2">
+                  ${currentUser.role === "teacher" ? "Use the top section switcher to view other sections you teach." : "Exams & schedules are locked to your home section."}
+                </span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] font-bold uppercase text-slate-400">Section CRs:</span>
+                ${sectionCRs
+                  .map(
+                    (cr) => `
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${cr.crRole === "1st CR" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" : "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"}">
+                    ${cr.name} (${cr.crRole})
+                  </span>
+                `,
+                  )
+                  .join("")}
+              </div>
+            </div>
+
+            ${examsHtml}
+
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+                <div>
+                  <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm">📝 ${homeSec} Assignments & Lab Record Deadlines</h3>
+                  <p class="text-[11px] text-slate-500">${sectionAssignments.filter((a) => a.done).length} of ${sectionAssignments.length} completed</p>
+                </div>
+                ${
+                  canAddAssignments
+                    ? `
+                  <button onclick="toggleAddAssignmentModal(true)" class="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg transition shadow-xs">
+                    + Add Deadline
+                  </button>
+                `
+                    : ""
+                }
+              </div>
+              <div class="space-y-2.5">
+                ${assignmentsHtml}
+              </div>
+            </div>
+
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 pb-2 border-b border-slate-100 dark:border-slate-800 gap-1">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm">👨‍🏫 ${homeSec} Faculty & Day-by-Day Schedule</h3>
+                <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">Today is ${TODAY_DAY}</span>
+              </div>
+              <div class="space-y-3">
+                ${facultyHtml}
+              </div>
+            </div>
+          </div>
+        `;
+        }
+
+        // TAB 2: NOTES SPACE (Open Cross-Section Peeking + Full Synopsis View)
+        if (activeTab === "notes") {
+          const visibleSubjects = subjectsData.filter(
+            (s) => s.type === courseTypeFilter,
+          );
+          if (!visibleSubjects.find((s) => s.id === selectedSubjectId)) {
+            selectedSubjectId = visibleSubjects[0].id;
+          }
+          const currentSub = visibleSubjects.find(
+            (s) => s.id === selectedSubjectId,
+          );
+
+          const subjectPills = visibleSubjects
+            .map(
+              (s) => `
+          <button onclick="selectSubject('${s.id}')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+            selectedSubjectId === s.id
+              ? "bg-blue-600 text-white shadow"
+              : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
+          }">
+            ${s.name.split(" ")[0]}
+          </button>
+        `,
+            )
+            .join("");
+
+          const filteredModules = currentSub.modules.filter((m) => {
+            if (!searchQuery) return true;
+            return m.title.toLowerCase().includes(searchQuery.toLowerCase());
+          });
+
+          const modulesHtml =
+            filteredModules.length > 0
+              ? filteredModules
+                  .map((mod) => {
+                    const materialEntry = mod.materials[
+                      selectedSectionView
+                    ] || {
+                      filename: `${currentSub.name.split(" ")[0]}_Unit_Notes_${selectedSectionView.replace(" ", "")}.pptx`,
+                      slides: [
+                        {
+                          title: "Standard Module Notes",
+                          bullets: [
+                            "Class lecture overview for " + selectedSectionView,
+                            "Core syllabus topics covered in this unit.",
+                          ],
+                          diagram: "[Section Specific Material Available]",
+                        },
+                      ],
+                    };
+
+                    return `
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 mb-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-2">
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">${currentSub.name.split(" ")[0]}</span>
+                  <h4 class="font-bold text-slate-900 dark:text-slate-100 text-base">${mod.title}</h4>
+                </div>
+                
+                <button onclick="openDoubtModal('${currentSub.name}', '${mod.title}')" class="self-start sm:self-auto text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-lg font-bold border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition">
+                  <span>💬</span> Ask Claude
+                </button>
+              </div>
+
+              <div class="grid ${synopsisView ? "sm:grid-cols-2" : "sm:grid-cols-3"} gap-3 pt-3">
+                
+                ${
+                  !synopsisView
+                    ? `
+                  <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 flex flex-col justify-between">
+                    <div>
+                      <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase">1. Lecture Material</div>
+                      <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate mt-1">${materialEntry.filename}</div>
+                    </div>
+                    <div class="mt-3 flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                      <button onclick="openDocumentReader('${materialEntry.filename}', '${mod.title}', ${JSON.stringify(materialEntry.slides).replace(/"/g, "&quot;")})" class="flex-1 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-center transition shadow-sm">
+                        📖 Read
+                      </button>
+                      <button onclick="saveFileOffline('${materialEntry.filename}', '${mod.title}', ${JSON.stringify(materialEntry.slides).replace(/"/g, "&quot;")})" title="Save for offline access" class="px-2.5 py-1.5 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-bold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition">
+                        ⬇️
+                      </button>
+                    </div>
+                  </div>
+                `
+                    : ""
+                }
+
+                <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">Module Synopsis</span>
+                      <span class="text-[9px] bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 px-1.5 py-0.5 rounded font-bold">Full Recap</span>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate mt-1">${mod.synopsis.title}</div>
+                  </div>
+                  <div class="mt-3 flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <button onclick="openDocumentReader('${mod.synopsis.filename}', '${mod.synopsis.title}', ${JSON.stringify(mod.synopsis.slides).replace(/"/g, "&quot;")})" class="flex-1 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-center transition shadow-sm">
+                      📄 Read Synopsis
+                    </button>
+                    <button onclick="saveFileOffline('${mod.synopsis.filename}', '${mod.synopsis.title}', ${JSON.stringify(mod.synopsis.slides).replace(/"/g, "&quot;")})" title="Save for offline access" class="px-2.5 py-1.5 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-bold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition">
+                      ⬇️
+                    </button>
+                  </div>
+                </div>
+
+                <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60 flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-center justify-between">
+                      <span class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase">PYQs & Blueprint</span>
+                      <span class="text-[9px] bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 px-1.5 py-0.5 rounded font-bold">Past Papers</span>
+                    </div>
+                    <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate mt-1">${mod.pyq.title}</div>
+                  </div>
+                  <div class="mt-3 flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <button onclick="openDocumentReader('${mod.pyq.filename}', '${mod.pyq.title}', ${JSON.stringify(mod.pyq.slides).replace(/"/g, "&quot;")})" class="flex-1 py-1.5 text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg text-center transition shadow-sm">
+                      📑 Read PYQs
+                    </button>
+                    <button onclick="saveFileOffline('${mod.pyq.filename}', '${mod.pyq.title}', ${JSON.stringify(mod.pyq.slides).replace(/"/g, "&quot;")})" title="Save for offline access" class="px-2.5 py-1.5 text-xs bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-bold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition">
+                      ⬇️
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <span class="text-xs text-slate-500 dark:text-slate-400">Practice recall for this module:</span>
+                <button onclick="openQuiz('${mod.title}', ${JSON.stringify(mod.quiz).replace(/"/g, "&quot;")})" class="text-xs text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-1">
+                  Start 5-MCQ Practice Test →
+                </button>
+              </div>
+            </div>
+          `;
+                  })
+                  .join("")
+              : `
+          <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 text-center text-slate-500 text-xs">
+            No modules matched "${searchQuery}".
+          </div>
+        `;
+
+          contentHtml = `
+          <div class="space-y-4">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 bg-white dark:bg-slate-900 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div class="flex gap-1">
+                <button onclick="setCourseType('theory')" class="px-3.5 py-2 text-xs font-bold rounded-xl transition ${
+                  courseTypeFilter === "theory"
+                    ? "bg-blue-600 text-white shadow"
+                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                }">
+                  📖 Theory
+                </button>
+                <button onclick="setCourseType('lab')" class="px-3.5 py-2 text-xs font-bold rounded-xl transition ${
+                  courseTypeFilter === "lab"
+                    ? "bg-blue-600 text-white shadow"
+                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                }">
+                  🧪 Labs & Viva
+                </button>
+              </div>
+
+              <button onclick="toggleSynopsisView()" class="px-3.5 py-2 text-xs font-bold rounded-xl border transition flex items-center justify-center gap-1.5 ${
+                synopsisView
+                  ? "bg-emerald-600 text-white border-emerald-700 shadow-sm"
+                  : "bg-emerald-50/70 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900 hover:bg-emerald-100"
+              }">
+                <span>📑</span> ${synopsisView ? "Synopsis View: Active" : "Synopsis View"}
+              </button>
+
+              <div class="flex items-center gap-2 pr-1">
+                <select id="sectionFilterSelect" class="w-full sm:w-auto border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold bg-slate-50 dark:bg-slate-800 text-blue-600 dark:text-blue-400 outline-none">
+                  <option value="Section A" ${selectedSectionView === "Section A" ? "selected" : ""}>Section A Notes</option>
+                  <option value="Section B" ${selectedSectionView === "Section B" ? "selected" : ""}>Section B Notes</option>
+                  <option value="Section C" ${selectedSectionView === "Section C" ? "selected" : ""}>Section C Notes</option>
+                  <option value="Section D" ${selectedSectionView === "Section D" ? "selected" : ""}>Section D Notes</option>
+                  <option value="Section E" ${selectedSectionView === "Section E" ? "selected" : ""}>Section E Notes</option>
+                </select>
+              </div>
+            </div>
+
+            ${
+              selectedSectionView !== currentUser.section
+                ? `
+              <div class="px-3.5 py-2 bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900 rounded-xl text-xs text-blue-800 dark:text-blue-300 flex items-center justify-between">
+                <span>👀 Viewing <strong>${selectedSectionView}</strong> notes repository (Your active section is <strong>${currentUser.section}</strong>).</span>
+                <button onclick="resetToHomeSection()" class="font-bold underline">Back to ${currentUser.section}</button>
+              </div>
+            `
+                : ""
+            }
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                ${subjectPills}
+              </div>
+              <input type="text" id="moduleSearchInput" oninput="handleSearch(this.value)" value="${searchQuery}" placeholder="Search modules..." class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500 sm:w-48" />
+            </div>
+
+            <div class="flex items-center justify-between px-1">
+              <div>
+                <h3 class="font-extrabold text-slate-800 dark:text-slate-100 text-lg">${currentSub.name}</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Indexed for ${selectedSectionView}</p>
+              </div>
+              <span class="text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold px-3 py-1 rounded-full">
+                ${currentSub.modules.length} Modules
+              </span>
+            </div>
+
+            <div>${modulesHtml}</div>
+          </div>
+        `;
+        }
+
+        // TAB 3: UPLOAD PORTAL (Professors can pick any section they teach or "All My Sections")
+        if (activeTab === "upload" && canUploadNotes) {
+          const targetSectionOptions =
+            currentUser.role === "teacher"
+              ? `${currentUser.allowedSections.map((s) => `<option value="${s}" ${s === currentUser.section ? "selected" : ""}>${s}</option>`).join("")}
+             <option value="All My Sections (${currentUser.allowedSections.join(", ")})">All My Sections (${currentUser.allowedSections.join(", ")})</option>`
+              : `<option value="${currentUser.section}">${currentUser.section}</option>`;
+
+          contentHtml = `
+          <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm max-w-xl mx-auto">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-base font-bold text-slate-800 dark:text-slate-100">Direct Resource Ingestion</span>
+              <span class="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full">
+                ${currentUser.role === "teacher" ? "Faculty Authorized" : liveCrRole + " Access"}
+              </span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-5">Select metadata to tag files directly to the module.</p>
+            
+            <form id="uploadForm" class="space-y-3.5">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Subject</label>
+                  <select id="upSubject" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs bg-white">
+                    <option value="dbms" ${currentUser.subject === "DBMS" ? "selected" : ""}>DBMS (Database Systems)</option>
+                    <option value="os" ${currentUser.subject === "OS" ? "selected" : ""}>Operating Systems (OS)</option>
+                    <option value="cn" ${currentUser.subject === "CN" ? "selected" : ""}>Computer Networks (CN)</option>
+                    <option value="daa" ${currentUser.subject === "DAA" ? "selected" : ""}>Design & Analysis of Algorithms</option>
+                    <option value="java" ${currentUser.subject === "JAVA" ? "selected" : ""}>Java Programming</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Module / Unit</label>
+                  <select id="upModule" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs bg-white">
+                    <option value="1">Module 1</option>
+                    <option value="2">Module 2</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Material Type</label>
+                  <select id="upType" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs bg-white">
+                    <option>Official Lecture Deck (PPTX/PDF)</option>
+                    <option>Complete Module Synopsis</option>
+                    <option>Previous Exam Paper & Blueprint</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Target Section</label>
+                  <select id="upSection" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs bg-white font-medium text-blue-600 dark:text-blue-400">
+                    ${targetSectionOptions}
+                  </select>
+                </div>
+              </div>
+
+              <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-6 text-center hover:bg-slate-50 dark:hover:bg-slate-800 transition cursor-pointer">
+                <span class="text-2xl block mb-1">📄</span>
+                <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">Attach Document (PDF, PPTX)</span>
+              </div>
+
+              <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg text-xs transition shadow-md">
+                Publish Directly to Section Module
+              </button>
+            </form>
+          </div>
+        `;
+        }
+
+        // TAB 4: CLASS ADVISOR CR GOVERNANCE DESK
+        if (activeTab === "cr_governance" && currentUser.role === "teacher") {
+          const homeSec = currentUser.section;
+          const advisorId = sectionAdvisors[homeSec];
+          const advisorObj = authorizedFacultyDB.find(
+            (f) => f.id === advisorId,
+          );
+          const sectionRoster = authorizedStudentsDB.filter(
+            (s) => s.section === homeSec,
+          );
+
+          const activeCRs = sectionRoster.filter((s) => s.crRole !== "none");
+          const availableStudents = sectionRoster.filter(
+            (s) => s.crRole === "none",
+          );
+          const maleCRCount = activeCRs.filter((s) => s.sex === "M").length;
+          const femaleCRCount = activeCRs.filter((s) => s.sex === "F").length;
+
+          const activeCRsHtml =
+            activeCRs.length > 0
+              ? activeCRs
+                  .map(
+                    (cr) => `
+          <div class="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-xs text-slate-900 dark:text-slate-100">${cr.name}</span>
+                <span class="text-[10px] font-mono text-slate-500">(${cr.rollNo})</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-0.5">
+                Privileges: <strong>${cr.crRole === "1st CR" ? "Notes Upload + Assignment Posting" : "Notes Upload Only"}</strong>
+              </div>
+            </div>
+
+            ${
+              amIInCharge
+                ? `
+              <div class="flex items-center gap-2">
+                <select onchange="changeCRTier('${cr.rollNo}', this.value)" class="border dark:border-slate-700 rounded-lg px-2 py-1 text-xs font-bold bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400">
+                  <option value="1st CR" ${cr.crRole === "1st CR" ? "selected" : ""}>1st CR</option>
+                  <option value="2nd CR" ${cr.crRole === "2nd CR" ? "selected" : ""}>2nd CR</option>
+                </select>
+
+                <button onclick="removeCR('${cr.rollNo}')" class="px-2.5 py-1 text-xs font-bold bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-950 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900 rounded-lg transition">
+                  Remove
+                </button>
+              </div>
+            `
+                : `
+              <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">${cr.crRole}</span>
+            `
+            }
+          </div>
+        `,
+                  )
+                  .join("")
+              : `<p class="text-xs text-slate-500">No CRs currently appointed for ${homeSec}.</p>`;
+
+          contentHtml = `
+          <div class="space-y-5 max-w-2xl mx-auto">
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 mb-4">
+                <div>
+                  <h3 class="font-bold text-slate-800 dark:text-slate-100 text-base">${homeSec} Active Class Representatives</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Currently Appointed: <strong>${activeCRs.length} / 4 CRs</strong>
+                  </p>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded-lg ${amIInCharge ? "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300" : "bg-slate-100 text-slate-600"}">
+                  In-Charge: ${advisorObj ? advisorObj.name : "Assigned Faculty"}
+                </span>
+              </div>
+
+              ${
+                !amIInCharge
+                  ? `
+                <div class="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 rounded-xl text-xs text-amber-800 dark:text-amber-300 mb-4">
+                  🔒 Only <strong>${advisorObj ? advisorObj.name : "the Class Professor-in-Charge"}</strong> can add, change, or remove CRs for ${homeSec}. Use the top section switcher to open your In-Charge section.
+                </div>
+              `
+                  : ""
+              }
+
+              <div class="space-y-2.5">
+                ${activeCRsHtml}
+              </div>
+            </div>
+
+            ${
+              amIInCharge
+                ? `
+              <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center justify-between mb-1">
+                  <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm">+ Add CR from Available Class Students</h4>
+                  <span class="text-[11px] font-semibold text-slate-500">Quota Balance: ${maleCRCount}/2 M • ${femaleCRCount}/2 F</span>
+                </div>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Choose a student from ${homeSec} and select whether to appoint them as 1st CR or 2nd CR.</p>
+
+                ${
+                  availableStudents.length > 0
+                    ? `
+                  <form id="addCRForm" class="grid sm:grid-cols-3 gap-3 items-end">
+                    <div class="sm:col-span-1">
+                      <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Choose Student</label>
+                      <select id="newCRStudentSelect" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-xl p-2 text-xs font-semibold bg-white">
+                        ${availableStudents.map((st) => `<option value="${st.rollNo}">${st.name} (${st.rollNo}) • Sex: ${st.sex}</option>`).join("")}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Choose CR Tier</label>
+                      <select id="newCRTierSelect" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-xl p-2 text-xs font-bold bg-white text-blue-600 dark:text-blue-400">
+                        <option value="1st CR">1st CR (Full Access)</option>
+                        <option value="2nd CR">2nd CR (Notes Upload)</option>
+                      </select>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition shadow-sm">
+                      + Add CR
+                    </button>
+                  </form>
+                `
+                    : `
+                  <p class="text-xs text-slate-500 italic">All students in the roster are currently assigned.</p>
+                `
+                }
+              </div>
+            `
+                : ""
+            }
+          </div>
+        `;
+        }
+
+        // ==========================================
+        // RESCHEDULE MODAL (Classes & Exams)
+        // ==========================================
+        let rescheduleModalHtml = "";
+        if (activeRescheduleModal !== null) {
+          const isRoomChangeOnly =
+            activeRescheduleModal.requestedStatus === "Room Changed";
+          rescheduleModalHtml = `
+          <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
+                <div>
+                  <span class="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                    ${activeRescheduleModal.type === "exam" ? "Exam Rescheduling" : "Class Schedule Update"}
+                  </span>
+                  <h3 class="font-bold text-base text-slate-900 dark:text-slate-100">${activeRescheduleModal.title}</h3>
+                </div>
+                <button onclick="closeRescheduleModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+              </div>
+
+              <div class="p-2.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs text-slate-600 dark:text-slate-300 mb-4">
+                <strong>Original Slot:</strong> ${activeRescheduleModal.originalDetails}
+              </div>
+
+              <form id="rescheduleForm" class="space-y-4">
+                <!-- Choice: Set New Schedule Now OR Yet to Be Changed (TBA) -->
+                <div class="space-y-2">
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Choose Reschedule Option:</label>
+                  <div class="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                    <button type="button" onclick="setRescheduleMode('now')" class="py-2 text-xs font-bold rounded-lg transition ${rescheduleMode === "now" ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs" : "text-slate-600 dark:text-slate-400"}">
+                      Set New Schedule Now
+                    </button>
+                    <button type="button" onclick="setRescheduleMode('tba')" class="py-2 text-xs font-bold rounded-lg transition ${rescheduleMode === "tba" ? "bg-white dark:bg-slate-700 text-amber-600 dark:text-amber-400 shadow-xs" : "text-slate-600 dark:text-slate-400"}">
+                      Yet to Be Changed (TBA)
+                    </button>
+                  </div>
+                </div>
+
+                ${
+                  rescheduleMode === "now"
+                    ? `
+                  <div class="space-y-3 p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                        ${activeRescheduleModal.type === "exam" ? "New Exam Date" : "New Day / Date"}
+                      </label>
+                      <input required type="text" id="reschedNewDay" value="${activeRescheduleModal.defaultDay}" placeholder="e.g., Saturday, Nov 21" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs" />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                      <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">New Time Window</label>
+                        <input required type="text" id="reschedNewTime" value="${activeRescheduleModal.defaultTime}" placeholder="e.g., 02:00 PM – 03:00 PM" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs" />
+                      </div>
+                      <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">
+                          ${activeRescheduleModal.type === "exam" ? "Exam Hall / Room" : "New Room / Lab"}
+                        </label>
+                        <input ${isRoomChangeOnly ? "required" : ""} type="text" id="reschedNewRoom" value="${activeRescheduleModal.defaultRoom}" placeholder="e.g., Room 302" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs" />
+                      </div>
+                    </div>
+                  </div>
+                `
+                    : `
+                  <div class="p-3.5 bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-xl text-xs text-amber-900 dark:text-amber-200">
+                    Students will be notified that the original timing is off and the <strong>new schedule is yet to be changed (TBA)</strong>.
+                  </div>
+                `
+                }
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-sm">
+                  Confirm Schedule Update
+                </button>
+              </form>
+            </div>
+          </div>
+        `;
+        }
+
+        // ADD ASSIGNMENT MODAL
+        let addAssignmentModalHtml = "";
+        if (isAddAssignmentOpen) {
+          const isSubjectProfOnly =
+            currentUser.role === "teacher" && !amIInCharge;
+          addAssignmentModalHtml = `
+          <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
+                <h3 class="font-bold text-base text-slate-900 dark:text-slate-100">Post Assignment / Record Deadline</h3>
+                <button onclick="toggleAddAssignmentModal(false)" class="text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+              </div>
+
+              <form id="newAssignmentForm" class="space-y-3.5">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Subject</label>
+                  ${
+                    isSubjectProfOnly
+                      ? `
+                    <input type="text" id="assignSubInput" value="${currentUser.subject}" readonly class="w-full border dark:border-slate-700 bg-slate-100 dark:bg-slate-800 rounded-lg p-2 text-xs font-bold text-slate-600 dark:text-slate-400" />
+                    <p class="text-[10px] text-slate-400 mt-0.5">Subject faculty can post deadlines strictly for their own subject.</p>
+                  `
+                      : `
+                    <select id="assignSubInput" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs bg-white font-bold">
+                      <option value="DBMS">DBMS</option>
+                      <option value="OS">OS</option>
+                      <option value="CN">CN</option>
+                      <option value="DAA">DAA</option>
+                      <option value="JAVA">JAVA</option>
+                    </select>
+                  `
+                  }
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Assignment / Lab Record Title</label>
+                  <input required type="text" id="assignTitleInput" placeholder="e.g., DBMS Lab Record Exp 3 & 4" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Due Date / Time</label>
+                    <input required type="text" id="assignDueInput" placeholder="e.g., Monday, 4:00 PM" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Submit To</label>
+                    <input required type="text" id="assignSubmitToInput" placeholder="e.g., Cabin 304 / CR" class="w-full border dark:border-slate-700 dark:bg-slate-800 rounded-lg p-2 text-xs" />
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition mt-2">
+                  Publish to ${currentUser.section} Desk
+                </button>
+              </form>
+            </div>
+          </div>
+        `;
+        }
+
+        // OFFLINE SAVED FILES DRAWER MODAL
+        let offlineModalHtml = "";
+        if (isOfflineModalOpen) {
+          offlineModalHtml = `
+          <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
+                <div>
+                  <h3 class="font-bold text-base text-slate-900 dark:text-slate-100">💾 Offline Saved Library</h3>
+                  <p class="text-[11px] text-slate-500">Available to read anytime without internet access.</p>
+                </div>
+                <button onclick="toggleOfflineModal(false)" class="text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+              </div>
+
+              <div class="space-y-2.5 max-h-80 overflow-y-auto">
+                ${offlineSavedFiles
+                  .map(
+                    (file) => `
+                  <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
+                    <div class="truncate">
+                      <div class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${file.title}</div>
+                      <div class="text-[10px] font-mono text-slate-500 truncate">${file.filename}</div>
+                    </div>
+                    <button onclick="toggleOfflineModal(false); openDocumentReader('${file.filename}', '${file.title}', ${JSON.stringify(file.slides).replace(/"/g, "&quot;")})" class="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg shrink-0">
+                      Open
+                    </button>
+                  </div>
+                `,
+                  )
+                  .join("")}
+              </div>
+            </div>
+          </div>
+        `;
+        }
+
+        // FULL SCREEN SLIDE / PDF READER MODAL
+        let readerModalHtml = "";
+        if (activeReaderData !== null) {
+          const slide = activeReaderData.slides[
+            activeReaderData.currentSlide
+          ] || {
+            title: "Slide Not Found",
+            bullets: ["End of document."],
+            diagram: "",
+          };
+
+          readerModalHtml = `
+          <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 z-50">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-3xl w-full h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div class="px-5 py-3.5 bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <div class="truncate mr-4">
+                  <div class="text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">${activeReaderData.parentTitle}</div>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">${activeReaderData.filename}</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button onclick="saveFileOffline('${activeReaderData.filename}', '${activeReaderData.parentTitle}', ${JSON.stringify(activeReaderData.slides).replace(/"/g, "&quot;")})" class="text-xs bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1">
+                    ⬇️ Save Offline
+                  </button>
+                  <button onclick="closeDocumentReader()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold px-2">
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex-1 p-6 sm:p-10 flex flex-col justify-between overflow-y-auto bg-slate-50 dark:bg-slate-950/50">
+                <div>
+                  <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-6">
+                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100">${slide.title}</h2>
+                    <span class="text-xs font-mono font-semibold text-slate-400">
+                      ${activeReaderData.currentSlide + 1} / ${activeReaderData.slides.length}
+                    </span>
+                  </div>
+
+                  <ul class="space-y-3 mb-8">
+                    ${slide.bullets
+                      .map(
+                        (b) => `
+                      <li class="flex items-start gap-2.5 text-sm sm:text-base text-slate-700 dark:text-slate-300">
+                        <span class="text-blue-600 dark:text-blue-400 mt-1 font-bold">▪</span>
+                        <span>${b}</span>
+                      </li>
+                    `,
+                      )
+                      .join("")}
+                  </ul>
+
+                  ${
+                    slide.diagram
+                      ? `
+                    <div class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-dashed border-blue-300 dark:border-blue-900 text-center font-mono text-xs sm:text-sm text-blue-800 dark:text-blue-300 font-semibold shadow-sm">
+                      ${slide.diagram}
+                    </div>
+                  `
+                      : ""
+                  }
+                </div>
+                <div class="text-[11px] text-slate-400 italic text-center mt-6">
+                  Use the navigation controls below to flip through pages.
+                </div>
+              </div>
+
+              <div class="px-5 py-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <button onclick="prevSlide()" ${activeReaderData.currentSlide === 0 ? "disabled class='opacity-40 cursor-not-allowed text-xs font-bold px-4 py-2 border rounded-xl'" : "class='text-xs font-bold px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition'"}>
+                  ◀ Previous
+                </button>
+                <div class="text-xs font-bold text-slate-600 dark:text-slate-400">
+                  Page ${activeReaderData.currentSlide + 1} of ${activeReaderData.slides.length}
+                </div>
+                <button onclick="nextSlide()" ${activeReaderData.currentSlide === activeReaderData.slides.length - 1 ? "disabled class='opacity-40 cursor-not-allowed text-xs font-bold px-4 py-2 border rounded-xl'" : "class='text-xs font-bold px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow'"}>
+                  Next ▶
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        }
+
+        // CLAUDE AI DOUBT SOLVER MODAL
+        let doubtModalHtml = "";
+        if (activeDoubtModule !== null) {
+          doubtModalHtml = `
+          <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
+                <div>
+                  <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide">Module AI Assistant</span>
+                  <h3 class="font-bold text-base text-slate-800 dark:text-slate-100">${activeDoubtModule.moduleTitle}</h3>
+                </div>
+                <button onclick="closeDoubtModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+              </div>
+
+              <div class="space-y-4">
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                  Ask any conceptual doubt. Claude synthesizes a 3-bullet answer strictly from this unit's syllabus.
+                </p>
+                <textarea id="doubtInput" rows="3" placeholder="e.g., Explain the difference between Weak and Strong entities..." class="w-full border dark:border-slate-700 dark:bg-slate-800 p-2.5 rounded-xl text-xs outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                <button onclick="submitDoubt()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-xs transition">
+                  Solve Doubt via Claude
+                </button>
+                <div id="doubtOutput" class="hidden p-3.5 bg-blue-50/70 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900 rounded-xl space-y-2">
+                  <span class="text-[11px] font-bold text-blue-700 dark:text-blue-300 uppercase">Claude's Quick Breakdown:</span>
+                  <ul class="text-xs text-slate-700 dark:text-slate-300 space-y-1.5 list-disc pl-4" id="doubtResponseBullets"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        }
+
+        // SETTINGS MODAL (⚙️)
+        let settingsModalHtml = "";
+        if (isSettingsOpen) {
+          settingsModalHtml = `
+          <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-5">
+                <div class="flex items-center gap-2">
+                  <span class="text-lg">⚙️</span>
+                  <h3 class="font-bold text-base text-slate-900 dark:text-slate-100">Preferences & Profile</h3>
+                </div>
+                <button onclick="toggleSettings(false)" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+              </div>
+
+              <div class="space-y-5">
+                <div>
+                  <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">UI Theme</label>
+                  <div class="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+                    <button onclick="setTheme(false)" class="py-2 text-xs font-bold rounded-lg transition ${!isDarkMode ? "bg-white text-blue-600 shadow" : "text-slate-600 dark:text-slate-400"}">
+                      ☀️ Light Academic
+                    </button>
+                    <button onclick="setTheme(true)" class="py-2 text-xs font-bold rounded-lg transition ${isDarkMode ? "bg-slate-700 text-blue-400 shadow" : "text-slate-600 dark:text-slate-400"}">
+                      🌙 Midnight OLED
+                    </button>
+                  </div>
+                </div>
+
+                <div class="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                  <div class="text-[11px] font-bold text-slate-400 uppercase">Verified Institutional Record</div>
+                  <div class="text-xs font-bold text-slate-800 dark:text-slate-100">${currentUser.name} (${currentUser.role === "teacher" ? currentUser.facultyId : currentUser.rollNo})</div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400">${currentUser.branch} • Active Section: <strong>${currentUser.section}</strong></div>
+                  ${currentUser.role === "teacher" ? `<div class="text-xs text-slate-500 dark:text-slate-400">Assigned Teaching Sections: <strong>${currentUser.allowedSections.join(", ")}</strong></div>` : ""}
+                  ${currentUser.role === "student" ? `<div class="text-xs text-emerald-600 dark:text-emerald-400 font-bold">Designation: ${liveCrRole === "none" ? "Regular Student" : liveCrRole}</div>` : ""}
+                  ${amIInCharge ? `<div class="text-xs text-purple-600 dark:text-purple-400 font-bold">Role: Class Professor-in-Charge (${currentUser.section})</div>` : ""}
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <button onclick="logout()" class="w-full text-center py-2.5 text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition">
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        }
+
+        // QUIZ MODAL
+        let quizModalHtml = "";
+        if (activeQuizData !== null) {
+          const questionsHtml = activeQuizData.questions
+            .map((qItem, qIdx) => {
+              const optsHtml = qItem.options
+                .map((opt, optIdx) => {
+                  const isSelected = quizAnswers[qIdx] === optIdx;
+                  let style =
+                    "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300";
+                  if (quizSubmitted) {
+                    if (optIdx === qItem.ans)
+                      style =
+                        "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 font-bold";
+                    else if (isSelected)
+                      style =
+                        "border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-800 dark:text-rose-300 line-through";
+                  } else if (isSelected) {
+                    style =
+                      "border-blue-600 bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-semibold";
+                  }
+
+                  return `
+              <button onclick="selectQuizAnswer(${qIdx}, ${optIdx})" ${quizSubmitted ? "disabled" : ""} class="w-full text-left p-2 rounded-lg text-xs border transition ${style}">
+                ${opt}
+              </button>
+            `;
+                })
+                .join("");
+
+              return `
+            <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-700/60">
+              <p class="text-xs font-bold text-slate-800 dark:text-slate-100 mb-2">${qIdx + 1}. ${qItem.q}</p>
+              <div class="space-y-1.5">${optsHtml}</div>
+            </div>
+          `;
+            })
+            .join("");
+
+          let scoreHtml = "";
+          if (quizSubmitted) {
+            const score = Object.keys(quizAnswers).filter(
+              (k) => quizAnswers[k] === activeQuizData.questions[k].ans,
+            ).length;
+            scoreHtml = `<div class="text-xs font-bold text-slate-800 dark:text-slate-100">Score: ${score} / 5</div>`;
+          }
+
+          quizModalHtml = `
+          <div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-200 dark:border-slate-800">
+              <div class="flex justify-between items-start pb-3 border-b border-slate-200 dark:border-slate-800">
+                <div>
+                  <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide">Self Practice Quiz</span>
+                  <h3 class="font-bold text-base text-slate-800 dark:text-slate-100">${activeQuizData.title}</h3>
+                </div>
+                <button onclick="closeQuiz()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold">✕</button>
+              </div>
+              <div class="mt-4 space-y-4">${questionsHtml}</div>
+              <div class="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                ${scoreHtml}
+                <button onclick="${quizSubmitted ? "closeQuiz()" : "submitQuiz()"}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs transition">
+                  ${quizSubmitted ? "Done" : "Submit Answers"}
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        }
+
+        root.innerHTML = `
+        <header class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-6 border-b border-slate-200 dark:border-slate-800 gap-3">
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="text-xl font-extrabold text-blue-600 dark:text-blue-400">CampusConnect</span>
+
+              <!-- If Teacher: Interactive Teaching Section Switcher for every section they teach -->
+              ${
+                currentUser.role === "teacher"
+                  ? `
+                <select onchange="switchFacultyTeachingSection(this.value)" title="Switch between sections you teach" class="text-xs bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 font-bold px-2.5 py-0.5 rounded-full border border-blue-200 dark:border-blue-800 outline-none cursor-pointer">
+                  ${currentUser.allowedSections
+                    .map(
+                      (sec) => `
+                    <option value="${sec}" ${sec === currentUser.section ? "selected" : ""}>
+                      ${currentUser.branch} • ${sec} ${sectionAdvisors[sec] === currentUser.facultyId ? "(In-Charge)" : ""}
+                    </option>
+                  `,
+                    )
+                    .join("")}
+                </select>
+              `
+                  : `
+                <span class="text-xs bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-semibold px-2 py-0.5 rounded-full">
+                  ${currentUser.branch} • ${currentUser.section}
+                </span>
+              `
+              }
+
+              ${amIInCharge ? `<span class="text-xs bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold px-2 py-0.5 rounded-full">In-Charge</span>` : currentUser.role === "teacher" ? `<span class="text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold px-2 py-0.5 rounded-full">${currentUser.subject} Faculty</span>` : ""}
+              ${liveCrRole !== "none" ? `<span class="text-xs bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full">${liveCrRole}</span>` : ""}
+              
+              <button onclick="toggleOfflineModal(true)" title="View downloaded files for offline study" class="text-[11px] bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold px-2.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 transition">
+                💾 Saved (${offlineSavedFiles.length})
+              </button>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Verified Identity: ${currentUser.name}</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <nav class="flex bg-slate-200/80 dark:bg-slate-800 p-1 rounded-xl text-xs font-semibold">
+              <button onclick="switchTab('desk')" class="px-3.5 py-1.5 rounded-lg transition ${activeTab === "desk" ? "bg-white dark:bg-slate-700 shadow text-blue-600 dark:text-blue-400" : "text-slate-600 dark:text-slate-400"}">
+                📅 Exam Desk
+              </button>
+              <button onclick="switchTab('notes')" class="px-3.5 py-1.5 rounded-lg transition ${activeTab === "notes" ? "bg-white dark:bg-slate-700 shadow text-blue-600 dark:text-blue-400" : "text-slate-600 dark:text-slate-400"}">
+                📚 Notes Space
+              </button>
+              
+              ${
+                canUploadNotes
+                  ? `
+                <button onclick="switchTab('upload')" class="px-3.5 py-1.5 rounded-lg transition ${activeTab === "upload" ? "bg-white dark:bg-slate-700 shadow text-blue-600 dark:text-blue-400" : "text-slate-600 dark:text-slate-400"}">
+                  📤 Upload
+                </button>
+              `
+                  : ""
+              }
+
+              ${
+                currentUser.role === "teacher"
+                  ? `
+                <button onclick="switchTab('cr_governance')" class="px-3.5 py-1.5 rounded-lg transition ${activeTab === "cr_governance" ? "bg-white dark:bg-slate-700 shadow text-blue-600 dark:text-blue-400" : "text-slate-600 dark:text-slate-400"}">
+                  👥 Manage CRs
+                </button>
+              `
+                  : ""
+              }
+            </nav>
+
+            <button onclick="toggleSettings(true)" title="Settings & Profile" class="text-sm bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 p-2 rounded-xl border border-slate-200 dark:border-slate-700 transition shadow-sm">
+              ⚙️
+            </button>
+          </div>
+        </header>
+
+        ${contentHtml}
+        ${rescheduleModalHtml}
+        ${addAssignmentModalHtml}
+        ${offlineModalHtml}
+        ${readerModalHtml}
+        ${doubtModalHtml}
+        ${settingsModalHtml}
+        ${quizModalHtml}
+      `;
+
+        const secSelect = document.getElementById("sectionFilterSelect");
+        if (secSelect) {
+          secSelect.addEventListener("change", (e) => {
+            selectedSectionView = e.target.value;
+            render();
+          });
+        }
+
+        const upForm = document.getElementById("uploadForm");
+        if (upForm) {
+          upForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const targetSub = document.getElementById("upSubject").value;
+            const targetMod = parseInt(
+              document.getElementById("upModule").value,
+            );
+            const targetSec = document.getElementById("upSection").value;
+            alert(
+              `Document published to ${targetSub.toUpperCase()} Module ${targetMod} for ${targetSec}!`,
+            );
+            activeTab = "notes";
+            selectedSubjectId = targetSub;
+            render();
+          });
+        }
+
+        const newAssignForm = document.getElementById("newAssignmentForm");
+        if (newAssignForm) {
+          newAssignForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const sub = document.getElementById("assignSubInput").value;
+            const title = document.getElementById("assignTitleInput").value;
+            const due = document.getElementById("assignDueInput").value;
+            const submitTo = document.getElementById(
+              "assignSubmitToInput",
+            ).value;
+
+            assignmentsList.unshift({
+              id: Date.now(),
+              title,
+              subject: sub,
+              due,
+              submitTo,
+              section: currentUser.section,
+              postedBy: `${currentUser.name} (${currentUser.role === "teacher" ? "Faculty" : liveCrRole})`,
+              done: false,
+            });
+            isAddAssignmentOpen = false;
+            render();
+          });
+        }
+
+        const addCRForm = document.getElementById("addCRForm");
+        if (addCRForm) {
+          addCRForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const roll = document.getElementById("newCRStudentSelect").value;
+            const tier = document.getElementById("newCRTierSelect").value;
+            appointNewCR(roll, tier);
+          });
+        }
+
+        const reschedForm = document.getElementById("rescheduleForm");
+        if (reschedForm && activeRescheduleModal) {
+          reschedForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            applyRescheduleUpdate();
+          });
+        }
+      }
+
+      // Helpers
+      window.switchRegRole = function (role) {
+        authError = "";
+        const stForm = document.getElementById("studentAuthForm");
+        const trForm = document.getElementById("teacherAuthForm");
+        const btnSt = document.getElementById("roleBtnStudent");
+        const btnTr = document.getElementById("roleBtnTeacher");
+
+        if (role === "student") {
+          stForm.classList.remove("hidden");
+          trForm.classList.add("hidden");
+          btnSt.className =
+            "w-1/2 py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm";
+          btnTr.className =
+            "w-1/2 py-2 text-xs font-bold rounded-lg transition text-slate-600 dark:text-slate-400";
+        } else {
+          stForm.classList.add("hidden");
+          trForm.classList.remove("hidden");
+          btnTr.className =
+            "w-1/2 py-2 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm";
+          btnSt.className =
+            "w-1/2 py-2 text-xs font-bold rounded-lg transition text-slate-600 dark:text-slate-400";
+        }
+      };
+
+      window.fillCredential = function (idVal, role) {
+        switchRegRole(role);
+        if (role === "student") {
+          document.getElementById("stRollInput").value = idVal;
+        } else {
+          document.getElementById("trIdInput").value = idVal;
+        }
+      };
+
+      window.switchFacultyTeachingSection = function (newSection) {
+        if (currentUser && currentUser.role === "teacher") {
+          currentUser.section = newSection;
+          selectedSectionView = newSection;
+          render();
+        }
+      };
+
+      window.switchTab = function (tab) {
+        activeTab = tab;
+        render();
+      };
+
+      window.setCourseType = function (type) {
+        courseTypeFilter = type;
+        render();
+      };
+
+      window.selectSubject = function (subId) {
+        selectedSubjectId = subId;
+        render();
+      };
+
+      window.resetToHomeSection = function () {
+        if (currentUser) {
+          selectedSectionView = currentUser.section;
+          render();
+        }
+      };
+
+      window.toggleSynopsisView = function () {
+        synopsisView = !synopsisView;
+        render();
+      };
+
+      window.toggleAssignment = function (id) {
+        const target = assignmentsList.find((a) => a.id === id);
+        if (target) {
+          target.done = !target.done;
+          render();
+        }
+      };
+
+      window.toggleAddAssignmentModal = function (open) {
+        isAddAssignmentOpen = open;
+        render();
+      };
+
+      // CR Governance Actions
+      window.appointNewCR = function (rollNo, tier) {
+        if (!isSectionInCharge(currentUser)) return;
+        const targetStudent = getStudentRecord(rollNo);
+        if (!targetStudent) return;
+
+        const secCRs = authorizedStudentsDB.filter(
+          (s) => s.section === targetStudent.section && s.crRole !== "none",
+        );
+        const sameSexCount = secCRs.filter(
+          (s) => s.sex === targetStudent.sex,
+        ).length;
+
+        if (sameSexCount >= 2) {
+          alert(
+            `Quota Limit: ${targetStudent.section} already has 2 Sex: ${targetStudent.sex} CRs appointed. Remove one first before adding another.`,
+          );
+          return;
+        }
+
+        targetStudent.crRole = tier;
+        render();
+      };
+
+      window.changeCRTier = function (rollNo, newTier) {
+        if (!isSectionInCharge(currentUser)) return;
+        const targetStudent = getStudentRecord(rollNo);
+        if (targetStudent) {
+          targetStudent.crRole = newTier;
+          render();
+        }
+      };
+
+      window.removeCR = function (rollNo) {
+        if (!isSectionInCharge(currentUser)) return;
+        const targetStudent = getStudentRecord(rollNo);
+        if (targetStudent) {
+          targetStudent.crRole = "none";
+          render();
+        }
+      };
+
+      // ==========================================
+      // RESCHEDULING WORKFLOW HANDLERS
+      // ==========================================
+      window.handleClassSlotStatusSelect = function (
+        facId,
+        sec,
+        slotIdx,
+        newStatus,
+      ) {
+        const fac = authorizedFacultyDB.find((f) => f.id === facId);
+        if (!fac || !fac.schedules[sec] || !fac.schedules[sec][slotIdx]) return;
+        const slot = fac.schedules[sec][slotIdx];
+
+        if (newStatus === "Rescheduled" || newStatus === "Room Changed") {
+          rescheduleMode = "now";
+          activeRescheduleModal = {
+            type: "class",
+            requestedStatus: newStatus,
+            facId,
+            sec,
+            slotIdx,
+            title: `${fac.subject} Class (${sec})`,
+            originalDetails: `${slot.day} • ${slot.time} • ${slot.room}`,
+            defaultDay: slot.day,
+            defaultTime: slot.time,
+            defaultRoom: slot.room,
+          };
+          render();
+        } else {
+          slot.status = newStatus;
+          slot.rescheduleInfo = null;
+          render();
+        }
+      };
+
+      window.handleExamStatusSelect = function (
+        sec,
+        examId,
+        subIdx,
+        newStatus,
+      ) {
+        const examList = sectionExamsDB[sec] || [];
+        const exam = examList.find((e) => e.id === examId);
+        if (!exam || !exam.subjects[subIdx]) return;
+        const sub = exam.subjects[subIdx];
+
+        if (newStatus === "Rescheduled") {
+          rescheduleMode = "now";
+          activeRescheduleModal = {
+            type: "exam",
+            requestedStatus: newStatus,
+            sec,
+            examId,
+            subIdx,
+            title: `${sub.name} (${sec})`,
+            originalDetails: `${sub.date} • ${sub.time}`,
+            defaultDay: sub.date,
+            defaultTime: sub.time,
+            defaultRoom: "",
+          };
+          render();
+        } else {
+          sub.status = newStatus;
+          sub.rescheduleInfo = null;
+          render();
+        }
+      };
+
+      window.setRescheduleMode = function (mode) {
+        rescheduleMode = mode;
+        render();
+      };
+
+      window.closeRescheduleModal = function () {
+        activeRescheduleModal = null;
+        render();
+      };
+
+      window.applyRescheduleUpdate = function () {
+        if (!activeRescheduleModal) return;
+
+        let infoPayload = { mode: rescheduleMode };
+        if (rescheduleMode === "now") {
+          infoPayload.newDay = document
+            .getElementById("reschedNewDay")
+            .value.trim();
+          infoPayload.newTime = document
+            .getElementById("reschedNewTime")
+            .value.trim();
+          infoPayload.newRoom = document
+            .getElementById("reschedNewRoom")
+            .value.trim();
+        }
+
+        if (activeRescheduleModal.type === "class") {
+          const fac = authorizedFacultyDB.find(
+            (f) => f.id === activeRescheduleModal.facId,
+          );
+          const slot =
+            fac.schedules[activeRescheduleModal.sec][
+              activeRescheduleModal.slotIdx
+            ];
+          slot.status = activeRescheduleModal.requestedStatus;
+          slot.rescheduleInfo = infoPayload;
+        } else if (activeRescheduleModal.type === "exam") {
+          const exam = sectionExamsDB[activeRescheduleModal.sec].find(
+            (e) => e.id === activeRescheduleModal.examId,
+          );
+          const sub = exam.subjects[activeRescheduleModal.subIdx];
+          sub.status = "Rescheduled";
+          sub.rescheduleInfo = infoPayload;
+        }
+
+        activeRescheduleModal = null;
+        render();
+      };
+
+      window.handleSearch = function (val) {
+        searchQuery = val;
+        render();
+        const input = document.getElementById("moduleSearchInput");
+        if (input) {
+          input.focus();
+          input.setSelectionRange(val.length, val.length);
+        }
+      };
+
+      window.saveFileOffline = function (filename, title, slides) {
+        if (!offlineSavedFiles.find((f) => f.filename === filename)) {
+          offlineSavedFiles.push({ filename, title, slides });
+        }
+        alert(`Saved "${filename}" to your Offline Library!`);
+        render();
+      };
+
+      window.toggleOfflineModal = function (open) {
+        isOfflineModalOpen = open;
+        render();
+      };
+
+      window.openDocumentReader = function (filename, parentTitle, slides) {
+        activeReaderData = {
+          filename,
+          parentTitle,
+          slides,
+          currentSlide: 0,
+        };
+        render();
+      };
+
+      window.closeDocumentReader = function () {
+        activeReaderData = null;
+        render();
+      };
+
+      window.nextSlide = function () {
+        if (
+          activeReaderData &&
+          activeReaderData.currentSlide < activeReaderData.slides.length - 1
+        ) {
+          activeReaderData.currentSlide++;
+          render();
+        }
+      };
+
+      window.prevSlide = function () {
+        if (activeReaderData && activeReaderData.currentSlide > 0) {
+          activeReaderData.currentSlide--;
+          render();
+        }
+      };
+
+      window.openDoubtModal = function (subjectName, moduleTitle) {
+        activeDoubtModule = { subjectName, moduleTitle };
+        render();
+      };
+
+      window.closeDoubtModal = function () {
+        activeDoubtModule = null;
+        render();
+      };
+
+      window.submitDoubt = function () {
+        const input = document.getElementById("doubtInput").value;
+        if (!input.trim()) return alert("Please enter your question.");
+
+        const outBox = document.getElementById("doubtOutput");
+        const bulletsList = document.getElementById("doubtResponseBullets");
+
+        bulletsList.innerHTML = `
+        <li><strong>Core Concept:</strong> ${input.substring(0, 32)}... is governed by syllabus criteria in ${activeDoubtModule.moduleTitle}.</li>
+        <li><strong>Key Rule:</strong> Ensure key constraints and boundary cases are clearly defined.</li>
+        <li><strong>Exam Tip:</strong> Sketch the clean architecture or state chart to earn full marks in Part B.</li>
+      `;
+        outBox.classList.remove("hidden");
+      };
+
+      window.toggleSettings = function (open) {
+        isSettingsOpen = open;
+        render();
+      };
+
+      window.setTheme = function (darkMode) {
+        isDarkMode = darkMode;
+        render();
+      };
+
+      window.logout = function () {
+        currentUser = null;
+        authError = "";
+        isSettingsOpen = false;
+        activeTab = "desk";
+        render();
+      };
+
+      window.openQuiz = function (title, questions) {
+        activeQuizData = { title, questions };
+        quizAnswers = {};
+        quizSubmitted = false;
+        render();
+      };
+
+      window.closeQuiz = function () {
+        activeQuizData = null;
+        render();
+      };
+
+      window.selectQuizAnswer = function (qIdx, optIdx) {
+        quizAnswers[qIdx] = optIdx;
+        render();
+      };
+
+      window.submitQuiz = function () {
+        quizSubmitted = true;
+        render();
+      };
+
+      render();
+    </script>
+  </body>
+</html>
