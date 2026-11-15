@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101a2c">
+  <title>CampusConnect — Campus Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #101a2c;
+      --panel: #17243a;
+      --line: #2b3b55;
+      --text: #f1f5fa;
+      --muted: #9cabc0;
+      --cyan: #62d6d0;
+      --lime: #d7ee8a;
+      --orange: #ffb86b;
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: radial-gradient(ellipse at 85% 5%, #24375a 0, transparent 35%), var(--bg);
+      font: 14px "DM Sans", sans-serif;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      width: 245px;
+      padding: 25px 17px;
+      background: #111d30;
+      border-right: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 8px;
+      margin-bottom: 31px;
+      font: 800 19px Manrope, sans-serif;
+      letter-spacing: -.7px;
+    }
+
+    .brand-icon {
+      display: grid;
+      flex: 0 0 37px;
+      place-items: center;
+      width: 37px;
+      height: 37px;
+      border-radius: 12px;
+      color: #101a2c;
+      background: linear-gradient(135deg, var(--cyan), var(--lime));
+      font-weight: 900;
+    }
+
+    .side-caption {
+      margin: 9px 10px;
+      color: #75869f;
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .nav { display: grid; gap: 5px; }
+
+    .nav button {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px 12px;
+      color: var(--muted);
+      text-align: left;
+      background: transparent;
+      border: 0;
+      border-radius: 11px;
+      font-size: 13px;
+    }
+
+    .nav button:hover { background: #1c2b42; color: var(--text); }
+
+    .nav button.active {
+      color: white;
+      background: #243956;
+      box-shadow: inset 3px 0 var(--cyan);
+    }
+
+    .nav-icon { width: 20px; text-align: center; font-size: 16px; }
+    .sidebar-bottom { margin-top: auto; }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 4px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .avatar {
+      display: grid;
+      flex: 0 0 37px;
+      place-items: center;
+      width: 37px;
+      height: 37px;
+      color: var(--cyan);
+      background: #34536a;
+      border-radius: 50%;
+      font-weight: 800;
+    }
+
+    .profile-info { min-width: 0; }
+    .profile-info strong {
+      display: block;
+      overflow: hidden;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .profile-info small { color: var(--muted); font-size: 10px; }
+
+    .switch-user {
+      margin-left: auto;
+      color: var(--muted);
+      background: transparent;
+      border: 0;
+      font-size: 17px;
+    }
+
+    .main {
+      max-width: 1600px;
+      margin-left: 245px;
+      padding: 27px clamp(18px, 4vw, 52px) 60px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 31px;
+    }
+
+    .breadcrumb { color: var(--muted); font-size: 12px; }
+    .breadcrumb strong { color: var(--text); }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .date-label { color: var(--muted); font: 11px "DM Mono", monospace; }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      color: var(--text);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 11px;
+    }
+
+    .view { display: none; animation: enter .22s ease; }
+    .view.active { display: block; }
+
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .page-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font: 700 clamp(27px, 4vw, 39px) Manrope, sans-serif;
+      letter-spacing: -1.6px;
+    }
+
+    .heading-accent { color: var(--cyan); }
+    .subtitle { margin: 0; color: var(--muted); font-size: 13px; }
+
+    .semester-pill {
+      padding: 8px 12px;
+      color: var(--muted);
+      background: #16243a;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      font: 10px "DM Mono", monospace;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      min-width: 0;
+      padding: 19px;
+      background: linear-gradient(150deg, #1a2940, #162339);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 13px;
+    }
+
+    .card-title-row h2, .card-title-row h3 {
+      margin: 0;
+      font: 700 15px Manrope, sans-serif;
+      letter-spacing: -.3px;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font: 10px "DM Mono", monospace;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      position: relative;
+      grid-column: span 8;
+      min-height: 190px;
+      overflow: hidden;
+      padding: 23px;
+      background: linear-gradient(115deg, #254b59, #1b3852 63%, #27385b);
+    }
+
+    .hero::after {
+      position: absolute;
+      right: 22px;
+      bottom: -46px;
+      color: #ffffff0d;
+      content: "</>";
+      font: 800 158px "DM Mono", monospace;
+      transform: rotate(-8deg);
+    }
+
+    .hero .eyebrow { color: #a9ded8; }
+
+    .hero h2 {
+      position: relative;
+      z-index: 1;
+      margin: 15px 0 6px;
+      font: 700 25px Manrope, sans-serif;
+      letter-spacing: -.8px;
+    }
+
+    .hero p { margin: 0; color: #c1d2df; font-size: 12px; }
+
+    .hero-foot {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 18px;
+      margin-top: 23px;
+      color: #c1d2df;
+      font-size: 11px;
+    }
+
+    .hero-foot b { color: white; }
+
+    .hero-action {
+      position: absolute;
+      z-index: 2;
+      top: 20px;
+      right: 19px;
+      padding: 9px 12px;
+      color: #142238;
+      background: var(--lime);
+      border: 0;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .countdown-card {
+      display: flex;
+      grid-column: span 4;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .countdown-number {
+      color: var(--orange);
+      font: 700 32px "DM Mono", monospace;
+      letter-spacing: -2px;
+    }
+
+    .countdown-card h3 { margin: 5px 0; font: 700 15px Manrope, sans-serif; }
+    .countdown-card p { margin: 0; color: var(--muted); font-size: 11px; }
+    .countdown-bottom { display: flex; align-items: end; justify-content: space-between; gap: 10px; }
+
+    .exam-tag {
+      padding: 6px 9px;
+      color: #ffd2a2;
+      background: #573e31;
+      border-radius: 8px;
+      font-size: 10px;
+    }
+
+    .stats {
+      display: grid;
+      grid-column: span 12;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .stat { padding: 14px; background: #17263c; border: 1px solid var(--line); border-radius: 14px; }
+    .stat-label { color: var(--muted); font-size: 10px; }
+    .stat-value { margin-top: 7px; font: 700 21px Manrope, sans-serif; }
+    .stat-note { margin-top: 3px; color: var(--cyan); font-size: 10px; }
+
+    .section-heading {
+      display: flex;
+      grid-column: span 12;
+      align-items: center;
+      justify-content: space-between;
+      margin: 7px 1px -3px;
+    }
+
+    .section-heading h2 { margin: 0; font: 700 16px Manrope, sans-serif; }
+
+    .link-button {
+      color: var(--cyan);
+      background: transparent;
+      border: 0;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .assignments, .deadline-list { grid-column: span 7; }
+    .exam-list { grid-column: span 5; }
+
+    .assignment-row, .exam-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid #293950;
+    }
+
+    .assignment-row:last-child, .exam-row:last-child { padding-bottom: 0; border: 0; }
+
+    .subject-mark {
+      display: grid;
+      flex: 0 0 36px;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      color: var(--cyan);
+      background: #24434c;
+      border-radius: 10px;
+      font: 700 10px "DM Mono", monospace;
+    }
+
+    .row-copy { min-width: 0; flex: 1; }
+    .row-copy strong { display: block; font-size: 12px; }
+    .row-copy small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+
+    .due {
+      padding: 6px 8px;
+      color: #ffd2a2;
+      background: #49372e;
+      border-radius: 8px;
+      font: 10px "DM Mono", monospace;
+      white-space: nowrap;
+    }
+
+    .due.soon { color: #ffaaaa; background: #4b303a; }
+
+    .exam-date {
+      flex: 0 0 43px;
+      width: 43px;
+      padding: 5px 0;
+      text-align: center;
+      background: #1c2a40;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .exam-date b { display: block; font: 700 16px "DM Mono", monospace; }
+    .exam-date small { color: var(--muted); font-size: 8px; text-transform: uppercase; }
+
+    .study-card { grid-column: span 5; background: linear-gradient(145deg, #293d54, #26334c); }
+    .study-card h3 { margin: 8px 0; font: 700 17px Manrope, sans-serif; }
+    .study-card p { color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .timer-line { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 15px; }
+    .timer { color: var(--lime); font: 700 23px "DM Mono", monospace; }
+
+    .primary, .secondary {
+      padding: 9px 12px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .primary { color: #10232d; background: var(--cyan); }
+    .secondary { color: var(--text); background: #293a53; border: 1px solid #3a4b64; }
+    .resource-panel { grid-column: span 12; }
+
+    .search {
+      width: min(250px, 40vw);
+      padding: 9px 11px;
+      color: var(--text);
+      background: #121f33;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      outline: none;
+      font-size: 11px;
+    }
+
+    .search:focus, .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--cyan); outline: none; }
+
+    .filters { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+
+    .filter {
+      padding: 6px 10px;
+      color: var(--muted);
+      background: #1b2a41;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      font-size: 10px;
+    }
+
+    .filter.active { color: #baf4eb; background: #315557; border-color: #427779; }
+
+    .resources-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+    .resource-card { padding: 13px; background: #152238; border: 1px solid var(--line); border-radius: 12px; }
+    .resource-type { color: var(--cyan); font: 10px "DM Mono", monospace; }
+    .resource-card h3 { margin: 9px 0 4px; font-size: 12px; line-height: 1.4; }
+    .resource-card p { margin: 0 0 10px; color: var(--muted); font-size: 10px; }
+    .resource-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .resource-bottom small { color: var(--muted); font-size: 9px; }
+
+    .file-button {
+      padding: 6px 8px;
+      color: var(--cyan);
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 10px;
+    }
+
+    .notice-panel, .todo-panel { grid-column: span 6; }
+    .notice-row { padding: 10px 0; border-bottom: 1px solid #293950; }
+    .notice-row:last-child { padding-bottom: 0; border: 0; }
+    .notice-row time { color: var(--cyan); font: 9px "DM Mono", monospace; }
+    .notice-row p { margin: 5px 0 0; font-size: 11px; line-height: 1.5; }
+    .todo-item { display: flex; align-items: center; gap: 9px; padding: 8px 0; font-size: 11px; }
+    .todo-item input { accent-color: var(--cyan); }
+    .todo-item.completed span { color: var(--muted); text-decoration: line-through; }
+
+    .toast {
+      position: fixed;
+      z-index: 20;
+      right: 20px;
+      bottom: 20px;
+      padding: 12px 16px;
+      color: #10232d;
+      background: var(--cyan);
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: .2s;
+    }
+
+    .toast.show { opacity: 1; transform: none; }
+
+    .modal {
+      position: fixed;
+      z-index: 30;
+      inset: 0;
+      display: none;
+      place-items: center;
+      overflow: auto;
+      padding: 18px;
+      background: #060d18cf;
+    }
+
+    .modal.show { display: grid; }
+
+    .modal-box {
+      width: min(100%, 500px);
+      max-height: calc(100vh - 36px);
+      overflow: auto;
+      padding: 23px;
+      background: #17243a;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 20px 80px #0007;
+    }
+
+    .modal-box h2 { margin: 0 0 5px; font: 700 20px Manrope, sans-serif; }
+    .modal-box > p { margin-bottom: 18px; color: var(--muted); font-size: 11px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 11px; }
+    .field { margin-bottom: 12px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { display: block; margin-bottom: 5px; color: var(--muted); font-size: 10px; }
+
+    .field input, .field select, .field textarea {
+      width: 100%;
+      padding: 10px;
+      color: var(--text);
+      background: #101c2f;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-size: 11px;
+    }
+
+    .field textarea { min-height: 75px; resize: vertical; }
+    .modal-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 5px; }
+    .role-switch { color: var(--cyan); background: none; border: 0; font-size: 11px; }
+    .upload-hint { margin-top: 5px; color: var(--muted); font-size: 9px; line-height: 1.5; }
+
+    .upload-permission {
+      grid-column: span 12;
+      padding: 12px 15px;
+      color: #c7d8e6;
+      background: #24324a;
+      border-radius: 12px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .empty { padding: 22px 10px; color: var(--muted); text-align: center; font-size: 11px; }
+
+    @media (max-width: 1050px) {
+      .sidebar { width: 210px; }
+      .main { margin-left: 210px; }
+      .resources-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 780px) {
+      .sidebar { width: 67px; padding: 19px 8px; }
+      .brand { justify-content: center; padding: 0; }
+      .brand-name, .side-caption, .nav-label, .profile-info, .switch-user { display: none; }
+      .nav button { justify-content: center; padding: 12px 5px; }
+      .nav-icon { width: auto; }
+      .profile { justify-content: center; }
+      .main { margin-left: 67px; padding: 22px 18px 45px; }
+    }
+
+    @media (max-width: 600px) {
+      .sidebar {
+        inset: auto 0 0;
+        width: 100%;
+        height: 62px;
+        padding: 5px 7px;
+        background: #111d30f5;
+        border: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .brand, .sidebar-bottom { display: none; }
+      .nav { display: flex; justify-content: space-around; height: 100%; }
+      .nav button { flex: 1; flex-direction: column; gap: 2px; padding: 4px 2px; font-size: 9px; }
+      .nav-label { display: block; }
+      .nav-icon { font-size: 16px; }
+      .main { margin: 0; padding: 17px 14px 82px; }
+      .topbar { margin-bottom: 22px; }
+      .date-label { display: none; }
+      .page-heading { align-items: start; flex-direction: column; }
+      .grid { gap: 11px; }
+
+      .hero, .countdown-card, .assignments, .exam-list, .deadline-list,
+      .study-card, .notice-panel, .todo-panel, .upload-permission {
+        grid-column: span 12;
+      }
+
+      .hero { min-height: 185px; padding: 19px; }
+      .hero h2 { max-width: 80%; font-size: 21px; }
+      .hero-action { top: 13px; right: 12px; }
+      .stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .stat { padding: 11px; }
+      .stat-value { font-size: 18px; }
+      .resources-grid { grid-template-columns: 1fr; }
+      .search { width: 100%; }
+      .card { padding: 15px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .resource-panel .card-title-row { align-items: start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div>
+      <div class="brand">
+        <div class="brand-icon">C</div>
+        <span class="brand-name">CampusConnect</span>
+      </div>
+      <div class="side-caption">Workspace</div>
+      <nav class="nav">
+        <button class="active" data-view="dashboard"><span class="nav-icon">⌂</span><span class="nav-label">Dashboard</span></button>
+        <button data-view="assignments"><span class="nav-icon">◷</span><span class="nav-label">Assignments</span></button>
+        <button data-view="exams"><span class="nav-icon">▣</span><span class="nav-label">Exams &amp; schedule</span></button>
+        <button data-view="resources"><span class="nav-icon">▤</span><span class="nav-label">Notes &amp; resources</span></button>
+        <button data-view="announcements"><span class="nav-icon">◉</span><span class="nav-label">Announcements</span></button>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="side-caption">Account</div>
+      <div class="profile">
+        <div class="avatar" id="userAvatar">CC</div>
+        <div class="profile-info"><strong id="userName">CampusConnect User</strong><small id="userRole">Student</small></div>
+        <button class="switch-user" title="Switch account" onclick="openAuth('login')">⇄</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="breadcrumb">CampusConnect <span> / </span><strong id="breadcrumb">Dashboard</strong></div>
+      <div class="top-actions"><span class="date-label" id="currentDate"></span><button class="icon-button" title="Notifications" onclick="showToast('You’re all caught up!')">♧</button></div>
+    </header>
+
+    <section class="view active" id="view-dashboard">
+      <div class="page-heading">
+        <div><h1>Good to see you, <span class="heading-accent" id="greetingName">there</span>.</h1><p class="subtitle">Your campus schedule, coursework, and shared resources in one place.</p></div>
+        <span class="semester-pill">CAMPUS · SEMESTER 4 · 2025–26</span>
+      </div>
+
+      <div class="grid">
+        <article class="card hero">
+          <span class="eyebrow">Next on your timetable · 10:30 AM</span>
+          <button class="hero-action" onclick="showToast('Class details opened')">Class details ↗</button>
+          <h2>Operating Systems</h2>
+          <p>Lecture · Dr. Meera Iyer</p>
+          <div class="hero-foot"><span>◷ <b>Room C-204</b></span><span>⌖ <b>Computer Science Block</b></span></div>
+        </article>
+
+        <article class="card countdown-card">
+          <div><span class="eyebrow">Next examination</span><h3 id="nextExamName">Database Management Systems</h3></div>
+          <div class="countdown-bottom"><div><div class="countdown-number" id="examCountdown">--</div><p>days remaining · 9:30 AM</p></div><span class="exam-tag">MID-SEM</span></div>
+        </article>
+
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Assignments due</div><div class="stat-value" id="assignmentCount">0</div><div class="stat-note">Check your deadlines</div></div>
+          <div class="stat"><div class="stat-label">Upcoming exams</div><div class="stat-value" id="examCount">0</div><div class="stat-note">Plan your revision</div></div>
+          <div class="stat"><div class="stat-label">Course resources</div><div class="stat-value" id="resourceCount">0</div><div class="stat-note">Shared across departments</div></div>
+          <div class="stat"><div class="stat-label">Study streak</div><div class="stat-value">5 days</div><div class="stat-note">Keep the momentum going</div></div>
+        </div>
+
+        <div class="section-heading"><h2>Stay ahead</h2><button class="link-button" onclick="navigate('assignments')">All assignments ↗</button></div>
+        <article class="card assignments"><div class="card-title-row"><h2>Assignment deadlines</h2><span class="eyebrow">Upcoming</span></div><div id="dashboardAssignments"></div></article>
+        <article class="card exam-list"><div class="card-title-row"><h2>Upcoming exams</h2><button class="link-button" onclick="navigate('exams')">View all</button></div><div id="dashboardExams"></div></article>
+
+        <div class="section-heading"><h2>Resources shared across departments</h2><button class="link-button" onclick="navigate('resources')">Open resource hub ↗</button></div>
+        <article class="card resource-panel" style="grid-column:span 7"><div class="card-title-row"><h2>Recently shared</h2><span class="eyebrow">Campus library</span></div><div id="dashboardResources"></div></article>
+        <article class="card study-card"><span class="eyebrow">Focus room</span><h3>One focused sprint at a time.</h3><p>Pick a task, set aside distractions, and work for 25 minutes. Small sessions add up.</p><div class="timer-line"><span class="timer" id="timer">25:00</span><button class="primary" id="timerButton" onclick="toggleTimer()">Start focus</button></div></article>
+
+        <div class="section-heading"><h2>Campus updates</h2><button class="link-button" onclick="navigate('announcements')">All announcements ↗</button></div>
+        <article class="card notice-panel"><div class="card-title-row"><h2>Announcements</h2><span class="eyebrow">Campus feed</span></div><div id="dashboardAnnouncements"></div></article>
+        <article class="card todo-panel"><div class="card-title-row"><h2>My study checklist</h2><button class="link-button" onclick="addChecklistItem()">＋ Add task</button></div><div id="checklist"></div></article>
+      </div>
+    </section>
+
+    <section class="view" id="view-assignments">
+      <div class="page-heading"><div><h1>Assignment <span class="heading-accent">tracker.</span></h1><p class="subtitle">Keep coursework, due dates, and progress together.</p></div><button class="primary staff-only hidden" onclick="openAssignmentModal()">＋ Add assignment</button></div>
+      <div class="grid"><article class="card assignments" style="grid-column:span 12"><div class="card-title-row"><h2>All assignment deadlines</h2><span class="eyebrow">All departments</span></div><div id="allAssignments"></div></article></div>
+    </section>
+
+    <section class="view" id="view-exams">
+      <div class="page-heading"><div><h1>Exams &amp; <span class="heading-accent">schedule.</span></h1><p class="subtitle">Plan ahead for tests, practicals, and semester exams.</p></div></div>
+      <div class="grid">
+        <article class="card exam-list" style="grid-column:span 7"><div class="card-title-row"><h2>Upcoming examinations</h2><span class="eyebrow">Campus schedule</span></div><div id="allExams"></div></article>
+        <article class="card" style="grid-column:span 5"><span class="eyebrow">Exam preparation</span><h3 style="font:700 17px Manrope;margin:10px 0">A plan beats a panic.</h3><p style="color:var(--muted);font-size:12px;line-height:1.7">Browse resources shared by students and faculty across departments to revise topics and prepare for exams.</p><button class="secondary" onclick="navigate('resources')">Browse shared resources</button></article>
+      </div>
+    </section>
+
+    <section class="view" id="view-resources">
+      <div class="page-heading">
+        <div><h1>Campus <span class="heading-accent">library.</span></h1><p class="subtitle">Browse study materials from CSE, CSM, ECE, EEE, and other departments.</p></div>
+        <button class="primary staff-only hidden" onclick="openResourceModal()">＋ Upload resource</button>
+      </div>
+      <div class="grid">
+        <div class="upload-permission" id="permissionMessage"></div>
+        <article class="card resource-panel">
+          <div class="card-title-row">
+            <h2>Shared course materials</h2>
+            <div class="resource-tools">
+              <select class="search" id="departmentFilter" aria-label="Filter by department" onchange="renderResources()"></select>
+              <input class="search" id="resourceSearch" placeholder="Search title or subject…" oninput="renderResources()">
+            </div>
+          </div>
+          <div class="filters" id="resourceFilters"></div>
+          <div class="resources-grid" id="resourceGrid"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="view" id="view-announcements">
+      <div class="page-heading"><div><h1>Campus <span class="heading-accent">announcements.</span></h1><p class="subtitle">Updates from departments, faculty, and class representatives.</p></div><button class="primary staff-only hidden" onclick="openAnnouncementModal()">＋ Post announcement</button></div>
+      <div class="grid"><article class="card notice-panel" style="grid-column:span 12"><div class="card-title-row"><h2>Noticeboard</h2><span class="eyebrow">Latest updates</span></div><div id="allAnnouncements"></div></article></div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="authModal">
+  <div class="modal-box">
+    <h2 id="authTitle">Create your CampusConnect account</h2>
+    <p>Register as a Student, Faculty member, or Class Representative.</p>
+    <form id="authForm">
+      <div class="form-grid">
+        <div class="field full auth-register"><label for="authRole">Campus role</label><select id="authRole"><option value="Student">Student</option><option value="Faculty">Faculty</option><option value="CR">Class Representative (CR)</option></select></div>
+        <div class="field auth-register"><label for="authName">Full name</label><input id="authName" placeholder="Your name"></div>
+        <div class="field auth-register"><label for="authId">Student / Faculty ID</label><input id="authId" placeholder="e.g. CSE24-018"></div>
+        <div class="field full auth-register"><label for="authDepartment">Department</label><select id="authDepartment"></select></div>
+        <div class="field auth-register"><label for="authSection">Section</label><select id="authSection"><option>A</option><option>B</option><option>C</option><option>Faculty</option></select></div>
+        <div class="field auth-register"><label for="authYear">Year</label><select id="authYear"><option>1st Year</option><option selected>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>Faculty</option></select></div>
+        <div class="field full"><label for="authEmail">University email</label><input id="authEmail" type="email" required placeholder="you@university.edu"></div>
+        <div class="field full"><label for="authPassword">Password</label><input id="authPassword" type="password" required minlength="4" placeholder="Create a password"></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="role-switch" id="authSwitch" onclick="toggleAuthMode()">Already registered? Sign in</button><button class="primary" id="authSubmit">Create account</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="resourceModal">
+  <div class="modal-box">
+    <h2>Upload a study resource</h2>
+    <p>Share PDFs, presentations, and notes with students across sections.</p>
+    <form id="resourceForm">
+      <div class="form-grid">
+        <div class="field full"><label for="uploadTitle">Resource title</label><input id="uploadTitle" required placeholder="e.g. Binary trees — lecture notes"></div>
+        <div class="field"><label for="uploadDepartment">Department</label><select id="uploadDepartment"></select></div>
+        <div class="field"><label for="uploadSubject">Subject or course</label><input id="uploadSubject" required placeholder="e.g. Data Structures"></div>
+        <div class="field"><label for="uploadType">Resource type</label><select id="uploadType"><option>PDF</option><option>PPT</option><option>Notes</option><option>DOC</option></select></div>
+        <div class="field"><label for="uploadSection">Class / section</label><select id="uploadSection"><option>All sections</option><option>Section A</option><option>Section B</option><option>Section C</option></select></div>
+        <div class="field full"><label for="uploadFile">Choose file</label><input id="uploadFile" type="file" accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.md" required><div class="upload-hint">This standalone demo saves files in the current browser. A hosted site needs shared server storage for access across different devices.</div></div>
+        <div class="field full"><label for="uploadDescription">Description (optional)</label><textarea id="uploadDescription" placeholder="Topics covered or notes for exam preparation"></textarea></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary" onclick="closeModal('resourceModal')">Cancel</button><button class="primary">Upload resource</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="assignmentModal">
+  <div class="modal-box">
+    <h2>Add an assignment</h2><p>Create a deadline for a course.</p>
+    <form id="assignmentForm">
+      <div class="form-grid">
+        <div class="field full"><label for="assignmentTitle">Assignment title</label><input id="assignmentTitle" required placeholder="e.g. Implement Dijkstra's algorithm"></div>
+        <div class="field"><label for="assignmentDepartment">Department</label><select id="assignmentDepartment"></select></div>
+        <div class="field"><label for="assignmentSubject">Subject</label><input id="assignmentSubject" required placeholder="Course name"></div>
+        <div class="field"><label for="assignmentDue">Due date</label><input id="assignmentDue" type="date" required></div>
+        <div class="field"><label for="assignmentSection">Section</label><select id="assignmentSection"><option>All sections</option><option>Section A</option><option>Section B</option><option>Section C</option></select></div>
+        <div class="field full"><label for="assignmentDetails">Instructions (optional)</label><textarea id="assignmentDetails" placeholder="Add brief instructions"></textarea></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary" onclick="closeModal('assignmentModal')">Cancel</button><button class="primary">Add deadline</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="announcementModal">
+  <div class="modal-box">
+    <h2>Post an announcement</h2><p>Share an update with your campus community.</p>
+    <form id="announcementForm">
+      <div class="form-grid">
+        <div class="field"><label for="announcementDepartment">Department</label><select id="announcementDepartment"></select></div>
+        <div class="field full"><label for="announcementTitle">Announcement title</label><input id="announcementTitle" required placeholder="e.g. Lab schedule updated"></div>
+        <div class="field full"><label for="announcementDetails">Details</label><textarea id="announcementDetails" required placeholder="Write the update for students"></textarea></div>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary" onclick="closeModal('announcementModal')">Cancel</button><button class="primary">Post update</button></div>
+    </form>
+  </div>
+</div>
+
+<script>
+const departments = [
+  "CSE — Computer Science & Engineering",
+  "CSM — Computer Science & Engineering (AI & ML)",
+  "CSD — Computer Science & Engineering (Data Science)",
+  "IT — Information Technology",
+  "ECE — Electronics & Communication Engineering",
+  "EEE — Electrical & Electronics Engineering",
+  "ME — Mechanical Engineering",
+  "CE — Civil Engineering"
+];
+
+const starterResources = [
+  {id:"r1",title:"Trees, traversals & balanced BSTs",department:"CSE — Computer Science & Engineering",subject:"Data Structures",section:"Section A",type:"PDF",description:"Lecture notes · Binary trees, AVL trees, and traversals",uploader:"Prof. S. Rao",role:"Faculty",date:"Nov 12",fileName:"",dataUrl:""},
+  {id:"r2",title:"SQL joins and normalization",department:"CSE — Computer Science & Engineering",subject:"Database Management Systems",section:"Section B",type:"PPT",description:"Class slides · Relational algebra to 3NF",uploader:"Dr. M. Iyer",role:"Faculty",date:"Nov 11",fileName:"",dataUrl:""},
+  {id:"r3",title:"CPU scheduling algorithms",department:"CSE — Computer Science & Engineering",subject:"Operating Systems",section:"Section C",type:"Notes",description:"Student notes · FCFS, SJF, Round Robin, and examples",uploader:"Aarav P. · CR",role:"CR",date:"Nov 10",fileName:"",dataUrl:""},
+  {id:"r4",title:"TCP/IP quick reference",department:"CSE — Computer Science & Engineering",subject:"Computer Networks",section:"Section A",type:"PDF",description:"Study guide · Layers, protocols, and common ports",uploader:"Dr. N. Shah",role:"Faculty",date:"Nov 9",fileName:"",dataUrl:""},
+  {id:"r5",title:"Algorithm complexity cheat sheet",department:"CSE — Computer Science & Engineering",subject:"Design and Analysis of Algorithms",section:"Section B",type:"Notes",description:"Big-O reference · Common sorting and graph algorithms",uploader:"Riya K. · CR",role:"CR",date:"Nov 8",fileName:"",dataUrl:""},
+  {id:"r6",title:"Agile and software testing",department:"CSE — Computer Science & Engineering",subject:"Software Engineering",section:"Section C",type:"PPT",description:"Lecture slides · Scrum, testing levels, and CI",uploader:"Prof. P. Das",role:"Faculty",date:"Nov 7",fileName:"",dataUrl:""},
+  {id:"r7",title:"Machine learning: supervised learning",department:"CSM — Computer Science & Engineering (AI & ML)",subject:"Machine Learning",section:"Section A",type:"PDF",description:"Exam revision guide · Regression, classification, and model evaluation",uploader:"Dr. R. Kumar",role:"Faculty",date:"Nov 6",fileName:"",dataUrl:""},
+  {id:"r8",title:"Neural networks and backpropagation",department:"CSM — Computer Science & Engineering (AI & ML)",subject:"Deep Learning",section:"Section B",type:"PPT",description:"Lecture slides · Neural network foundations and worked examples",uploader:"CSM Class Representative",role:"CR",date:"Nov 5",fileName:"",dataUrl:""},
+  {id:"r9",title:"Probability and statistics formula sheet",department:"CSD — Computer Science & Engineering (Data Science)",subject:"Probability for Data Science",section:"Section A",type:"Notes",description:"Quick reference · Distributions, expectation, and variance",uploader:"Prof. A. Menon",role:"Faculty",date:"Nov 4",fileName:"",dataUrl:""},
+  {id:"r10",title:"Python for data analysis",department:"CSD — Computer Science & Engineering (Data Science)",subject:"Data Analytics",section:"Section C",type:"PDF",description:"Practice guide · Pandas, data cleaning, and visualization",uploader:"CSD Class Representative",role:"CR",date:"Nov 3",fileName:"",dataUrl:""},
+  {id:"r11",title:"Computer organization: processor basics",department:"ECE — Electronics & Communication Engineering",subject:"Computer Organization",section:"Section B",type:"PPT",description:"Study slides · Instruction cycle, registers, and processor structure",uploader:"Prof. V. Rao",role:"Faculty",date:"Nov 2",fileName:"",dataUrl:""},
+  {id:"r12",title:"Digital logic and Boolean algebra",department:"ECE — Electronics & Communication Engineering",subject:"Digital Electronics",section:"Section A",type:"PDF",description:"Revision notes · Boolean simplification and logic circuits",uploader:"ECE Class Representative",role:"CR",date:"Nov 1",fileName:"",dataUrl:""},
+  {id:"r13",title:"Power systems: essential equations",department:"EEE — Electrical & Electronics Engineering",subject:"Power Systems",section:"Section A",type:"Notes",description:"Exam notes · Three-phase systems and power calculations",uploader:"Dr. S. Reddy",role:"Faculty",date:"Oct 30",fileName:"",dataUrl:""},
+  {id:"r14",title:"Electrical machines revision slides",department:"EEE — Electrical & Electronics Engineering",subject:"Electrical Machines",section:"Section B",type:"PPT",description:"Lecture slides · Transformers and induction motors",uploader:"EEE Class Representative",role:"CR",date:"Oct 29",fileName:"",dataUrl:""}
+];
+
+const starterAssignments = [
+  {id:"a1",title:"Implement a graph traversal visualizer",department:"CSE — Computer Science & Engineering",subject:"Data Structures",due:"2026-11-17",section:"All sections"},
+  {id:"a2",title:"Normalize the library database schema",department:"CSE — Computer Science & Engineering",subject:"Database Management Systems",due:"2026-11-20",section:"All sections"},
+  {id:"a3",title:"Compare CPU scheduling algorithms",department:"CSE — Computer Science & Engineering",subject:"Operating Systems",due:"2026-11-24",section:"All sections"}
+];
+
+const starterExams = [
+  {date:"2026-11-27",subject:"Database Management Systems",department:"CSE",kind:"Mid-semester exam",time:"9:30 AM",room:"Exam Hall B"},
+  {date:"2026-12-02",subject:"Data Structures",department:"CSE",kind:"Mid-semester exam",time:"1:30 PM",room:"Exam Hall A"},
+  {date:"2026-12-05",subject:"Operating Systems",department:"CSE",kind:"Class test",time:"10:00 AM",room:"C-204"},
+  {date:"2026-12-09",subject:"Computer Networks",department:"CSE",kind:"Practical examination",time:"2:00 PM",room:"Networks Lab"}
+];
+
+const starterAnnouncements = [
+  {id:"n1",title:"CSE mid-semester timetable published",details:"The examination timetable is available in the Exams & Schedule section. Please check your room assignment before exam day.",department:"CSE",by:"CSE Department",date:"Today · 9:15 AM"},
+  {id:"n2",title:"Data Structures lab submissions",details:"Submit your lab record and source files through the department portal before Friday at 5:00 PM.",department:"CSE",by:"Data Structures Faculty",date:"Yesterday"},
+  {id:"n3",title:"Open lab hours this week",details:"The programming lab will stay open until 7:00 PM on Wednesday and Thursday for project work.",department:"CSE",by:"CSE Class Representative",date:"Nov 13"}
+];
+
+function loadData(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveData(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    showToast("Browser storage is full. Try a smaller file.");
+  }
+}
+
+let resources = loadData("campusconnect_resources", starterResources);
+let assignments = loadData("campusconnect_assignments", starterAssignments);
+let announcements = loadData("campusconnect_announcements", starterAnnouncements);
+let currentUser = loadData("campusconnect_user", null);
+let activeDepartment = "All departments";
+let toastTimeout;
+let timerSeconds = 25 * 60;
+let timerInterval = null;
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => toast.classList.remove("show"), 2600);
+}
+
+function addDepartmentOptions(selectId, includeAll = false) {
+  const select = document.getElementById(selectId);
+  select.replaceChildren();
+  if (includeAll) {
+    const all = document.createElement("option");
+    all.value = "All departments";
+    all.textContent = "All departments";
+    select.append(all);
+  }
+  departments.forEach(department => {
+    const option = document.createElement("option");
+    option.value = department;
+    option.textContent = department;
+    select.append(option);
+  });
+}
+
+["authDepartment", "uploadDepartment", "assignmentDepartment", "announcementDepartment"].forEach(id => addDepartmentOptions(id));
+addDepartmentOptions("departmentFilter", true);
+
+function openAuth(mode = "register") {
+  updateAuthModal(mode);
+  document.getElementById("authModal").classList.add("show");
+}
+
+function updateAuthModal(mode) {
+  const loginMode = mode === "login";
+  document.getElementById("authTitle").textContent = loginMode ? "Sign in to CampusConnect" : "Create your CampusConnect account";
+  document.getElementById("authSubmit").textContent = loginMode ? "Sign in" : "Create account";
+  document.getElementById("authSwitch").textContent = loginMode ? "New here? Create an account" : "Already registered? Sign in";
+  document.querySelectorAll(".auth-register").forEach(field => field.classList.toggle("hidden", loginMode));
+  document.getElementById("authForm").dataset.mode = mode;
+}
+
+function toggleAuthMode() {
+  updateAuthModal(document.getElementById("authForm").dataset.mode === "register" ? "login" : "register");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("show");
+}
+
+document.getElementById("authForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const mode = event.currentTarget.dataset.mode;
+  const email = document.getElementById("authEmail").value.trim().toLowerCase();
+  const password = document.getElementById("authPassword").value;
+  const accounts = loadData("campusconnect_accounts", []);
+
+  if (mode === "register") {
+    if (accounts.some(account => account.email === email)) {
+      showToast("That email is already registered. Please sign in.");
+      return;
+    }
+
+    currentUser = {
+      name: document.getElementById("authName").value.trim(),
+      id: document.getElementById("authId").value.trim(),
+      department: document.getElementById("authDepartment").value,
+      section: document.getElementById("authSection").value,
+      year: document.getElementById("authYear").value,
+      email,
+      password,
+      role: document.getElementById("authRole").value
+    };
+
+    accounts.push(currentUser);
+    saveData("campusconnect_accounts", accounts);
+  } else {
+    currentUser = accounts.find(account => account.email === email && account.password === password);
+    if (!currentUser) {
+      showToast("Email or password not found. Check your details or register.");
+      return;
+    }
+  }
+
+  saveData("campusconnect_user", currentUser);
+  closeModal("authModal");
+  updateUserInterface();
+  renderAll();
+  showToast("Welcome to CampusConnect, " + currentUser.name.split(" ")[0] + "!");
+});
+
+function updateUserInterface() {
+  if (!currentUser) return;
+
+  const canManage = ["Faculty", "CR"].includes(currentUser.role);
+  document.getElementById("userName").textContent = currentUser.name;
+  document.getElementById("userRole").textContent = currentUser.role + " · " + departmentCode(currentUser.department);
+  document.getElementById("userAvatar").textContent = currentUser.name.split(/\s+/).map(word => word[0]).join("").slice(0, 2).toUpperCase();
+  document.getElementById("greetingName").textContent = currentUser.name.split(" ")[0];
+
+  document.querySelectorAll(".staff-only").forEach(element => element.classList.toggle("hidden", !canManage));
+
+  document.getElementById("permissionMessage").textContent = canManage
+    ? "Upload access enabled for " + currentUser.role + ". Share PDFs, PowerPoint presentations, and notes for any department, subject, or section. Students across sections can access shared materials."
+    : "Students can browse materials from every department and section for exam preparation. Faculty and Class Representatives can upload course resources.";
+}
+
+function departmentCode(value = "") {
+  return value.split(" — ")[0] || value;
+}
+
+function navigate(view) {
+  document.querySelectorAll(".view").forEach(section => section.classList.remove("active"));
+  document.getElementById("view-" + view).classList.add("active");
+
+  document.querySelectorAll(".nav button").forEach(button => {
+    button.classList.toggle("active", button.dataset.view === view);
+  });
+
+  const labels = {
+    dashboard: "Dashboard",
+    assignments: "Assignments",
+    exams: "Exams & schedule",
+    resources: "Notes & resources",
+    announcements: "Announcements"
+  };
+
+  document.getElementById("breadcrumb").textContent = labels[view];
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.querySelectorAll(".nav button").forEach(button => {
+  button.addEventListener("click", () => navigate(button.dataset.view));
+});
+
+function daysUntil(dateString) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Math.ceil((new Date(dateString + "T00:00:00") - today) / 86400000);
+}
+
+function dateText(value) {
+  return new Date(value + "T12:00:00").toLocaleDateString("en", { month: "short", day: "numeric" });
+}
+
+function deadlineText(date) {
+  const days = daysUntil(date);
+  if (days < 0) return "Past due";
+  if (days === 0) return "Due today";
+  if (days === 1) return "Due tomorrow";
+  return "Due in " + days + " days";
+}
+
+function assignmentCard(item) {
+  const row = document.createElement("div");
+  row.className = "assignment-row";
+  row.innerHTML = '<div class="subject-mark"></div><div class="row-copy"><strong></strong><small></small></div><span class="due"></span>';
+  row.querySelector(".subject-mark").textContent = departmentCode(item.department);
+  row.querySelector(".row-copy strong").textContent = item.title;
+  row.querySelector(".row-copy small").textContent = departmentCode(item.department) + " · " + item.subject + " · " + dateText(item.due);
+  const due = row.querySelector(".due");
+  due.textContent = deadlineText(item.due);
+  if (daysUntil(item.due) <= 2) due.classList.add("soon");
+  return row;
+}
+
+function examCard(item) {
+  const date = new Date(item.date + "T12:00:00");
+  const row = document.createElement("div");
+  row.className = "exam-row";
+  row.innerHTML = '<div class="exam-date"><b></b><small></small></div><div class="row-copy"><strong></strong><small></small></div>';
+  row.querySelector(".exam-date b").textContent = date.getDate();
+  row.querySelector(".exam-date small").textContent = date.toLocaleDateString("en", { month: "short" });
+  row.querySelector(".row-copy strong").textContent = item.subject;
+  row.querySelector(".row-copy small").textContent = item.department + " · " + item.kind + " · " + item.time + " · " + item.room;
+  return row;
+}
+
+function announcementCard(item) {
+  const row = document.createElement("div");
+  row.className = "notice-row";
+  row.innerHTML = "<time></time><p></p>";
+  row.querySelector("time").textContent = (item.department ? departmentCode(item.department) + " · " : "") + item.by + " · " + item.date;
+  row.querySelector("p").textContent = item.title + " — " + item.details;
+  return row;
+}
+
+function resourceCard(item) {
+  const card = document.createElement("article");
+  card.className = "resource-card";
+
+  const type = document.createElement("span");
+  type.className = "resource-type";
+  type.textContent = departmentCode(item.department) + " · " + item.subject + " · " + item.type;
+
+  const title = document.createElement("h3");
+  title.textContent = item.title;
+
+  const description = document.createElement("p");
+  description.textContent = (item.section || "All sections") + " · " + (item.description || "Shared by " + item.uploader);
+
+  const bottom = document.createElement("div");
+  bottom.className = "resource-bottom";
+
+  const uploader = document.createElement("small");
+  uploader.textContent = item.uploader + " · " + item.date;
+
+  const button = document.createElement("button");
+  button.className = "file-button";
+  button.textContent = item.dataUrl ? "Open file ↗" : "Details";
+  button.addEventListener("click", () => {
+    if (!item.dataUrl) {
+      showToast(item.title + " · " + item.description);
+      return;
+    }
+    const link = document.createElement("a");
+    link.href = item.dataUrl;
+    link.download = item.fileName || item.title;
+    link.target = "_blank";
+    link.click();
+  });
+
+  bottom.append(uploader, button);
+  card.append(type, title, description, bottom);
+  return card;
+}
+
+function fillList(id, items, renderer, emptyMessage) {
+  const container = document.getElementById(id);
+  container.replaceChildren();
+
+  if (!items.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = emptyMessage;
+    container.append(empty);
+    return;
+  }
+
+  items.forEach(item => container.append(renderer(item)));
+}
+
+function renderAssignments() {
+  const sorted = [...assignments].sort((a, b) => a.due.localeCompare(b.due));
+  fillList("dashboardAssignments", sorted.slice(0, 3), assignmentCard, "No assignments to show.");
+  fillList("allAssignments", sorted, assignmentCard, "No assignment deadlines have been added.");
+  document.getElementById("assignmentCount").textContent = sorted.filter(item => daysUntil(item.due) >= 0).length;
+}
+
+function renderExams() {
+  const sorted = [...starterExams].sort((a, b) => a.date.localeCompare(b.date));
+  fillList("dashboardExams", sorted.slice(0, 3), examCard, "No upcoming exams.");
+  fillList("allExams", sorted, examCard, "No exams scheduled.");
+
+  const upcoming = sorted.filter(item => daysUntil(item.date) >= 0);
+  document.getElementById("examCount").textContent = upcoming.length;
+
+  const nextExam = upcoming[0];
+  document.getElementById("examCountdown").textContent = nextExam ? daysUntil(nextExam.date) : "—";
+  if (nextExam) document.getElementById("nextExamName").textContent = nextExam.subject;
+}
+
+function renderAnnouncements() {
+  fillList("dashboardAnnouncements", announcements.slice(0, 2), announcementCard, "No announcements yet.");
+  fillList("allAnnouncements", announcements, announcementCard, "No announcements have been posted.");
+}
+
+function renderResources() {
+  const search = (document.getElementById("resourceSearch").value || "").toLowerCase();
+  const department = document.getElementById("departmentFilter").value;
+
+  const filtered = resources.filter(item => {
+    const matchesDepartment = department === "All departments" || item.department === department;
+    const searchable = [item.title, item.subject, item.description, item.department, item.section].join(" ").toLowerCase();
+    return matchesDepartment && searchable.includes(search);
+  });
+
+  fillList("resourceGrid", filtered, resourceCard, "No resources match your search.");
+
+  fillList("dashboardResources", resources.slice(0, 3), item => {
+    const row = document.createElement("div");
+    row.className = "assignment-row";
+    row.innerHTML = '<div class="subject-mark"></div><div class="row-copy"><strong></strong><small></small></div><button class="file-button">Open</button>';
+    row.querySelector(".subject-mark").textContent = departmentCode(item.department);
+    row.querySelector(".row-copy strong").textContent = item.title;
+    row.querySelector(".row-copy small").textContent = departmentCode(item.department) + " · " + item.subject + " · " + (item.section || "All sections");
+    row.querySelector("button").onclick = () => {
+      if (item.dataUrl) window.open(item.dataUrl, "_blank");
+      else showToast(item.title + " · " + item.description);
+    };
+    return row;
+  }, "No resources have been shared.");
+
+  document.getElementById("resourceCount").textContent = resources.length;
+}
+
+function renderChecklist() {
+  const container = document.getElementById("checklist");
+  const tasks = loadData("campusconnect_checklist", ["Review linked lists", "Practice SQL queries", "Revise process scheduling"]);
+  container.replaceChildren();
+
+  tasks.forEach(task => {
+    const label = document.createElement("label");
+    label.className = "todo-item";
+    label.innerHTML = '<input type="checkbox"><span></span>';
+    label.querySelector("span").textContent = task;
+    label.querySelector("input").addEventListener("change", event => {
+      label.classList.toggle("completed", event.target.checked);
+    });
+    container.append(label);
+  });
+}
+
+function renderAll() {
+  renderAssignments();
+  renderExams();
+  renderAnnouncements();
+  renderResources();
+  renderChecklist();
+}
+
+function openResourceModal() {
+  if (!currentUser || !["Faculty", "CR"].includes(currentUser.role)) {
+    showToast("Only Faculty and CRs can upload resources.");
+    return;
+  }
+  document.getElementById("resourceModal").classList.add("show");
+}
+
+function openAssignmentModal() {
+  if (!currentUser || !["Faculty", "CR"].includes(currentUser.role)) {
+    showToast("Only Faculty and CRs can add course deadlines.");
+    return;
+  }
+  document.getElementById("assignmentModal").classList.add("show");
+}
+
+function openAnnouncementModal() {
+  if (!currentUser || !["Faculty", "CR"].includes(currentUser.role)) {
+    showToast("Only Faculty and CRs can post announcements.");
+    return;
+  }
+  document.getElementById("announcementModal").classList.add("show");
+}
+
+document.getElementById("resourceForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  if (!currentUser || !["Faculty", "CR"].includes(currentUser.role)) {
+    showToast("Upload access is for Faculty and CRs.");
+    return;
+  }
+
+  const file = document.getElementById("uploadFile").files[0];
+  if (!file) return showToast("Choose a file to upload.");
+  if (file.size > 2 * 1024 * 1024) return showToast("For this browser demo, choose a file under 2 MB.");
+  if (!/\.(pdf|ppt|pptx|doc|docx|txt|md)$/i.test(file.name)) {
+    return showToast("Choose a PDF, PPT, or notes document.");
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    resources.unshift({
+      id: "r" + Date.now(),
+      title: document.getElementById("uploadTitle").value.trim(),
+      department: document.getElementById("uploadDepartment").value,
+      subject: document.getElementById("uploadSubject").value.trim(),
+      section: document.getElementById("uploadSection").value,
+      type: document.getElementById("uploadType").value,
+      description: document.getElementById("uploadDescription").value.trim() || file.name,
+      uploader: currentUser.name + " · " + currentUser.role,
+      role: currentUser.role,
+      date: "Just now",
+      fileName: file.name,
+      dataUrl: reader.result
+    });
+
+    saveData("campusconnect_resources", resources);
+    event.target.reset();
+    closeModal("resourceModal");
+    renderResources();
+    showToast("Resource shared with students across sections.");
+  };
+
+  reader.onerror = () => showToast("Could not read this file.");
+  reader.readAsDataURL(file);
+});
+
+document.getElementById("assignmentForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  assignments.push({
+    id: "a" + Date.now(),
+    title: document.getElementById("assignmentTitle").value.trim(),
+    department: document.getElementById("assignmentDepartment").value,
+    subject: document.getElementById("assignmentSubject").value.trim(),
+    due: document.getElementById("assignmentDue").value,
+    section: document.getElementById("assignmentSection").value
+  });
+
+  saveData("campusconnect_assignments", assignments);
+  event.target.reset();
+  closeModal("assignmentModal");
+  renderAssignments();
+  showToast("Assignment deadline added.");
+});
+
+document.getElementById("announcementForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  announcements.unshift({
+    id: "n" + Date.now(),
+    department: document.getElementById("announcementDepartment").value,
+    title: document.getElementById("announcementTitle").value.trim(),
+    details: document.getElementById("announcementDetails").value.trim(),
+    by: currentUser.name + " · " + currentUser.role,
+    date: "Just now"
+  });
+
+  saveData("campusconnect_announcements", announcements);
+  event.target.reset();
+  closeModal("announcementModal");
+  renderAnnouncements();
+  showToast("Announcement posted.");
+});
+
+function addChecklistItem() {
+  const task = prompt("What do you need to study or finish?");
+  if (!task || !task.trim()) return;
+
+  const tasks = loadData("campusconnect_checklist", ["Review linked lists", "Practice SQL queries", "Revise process scheduling"]);
+  tasks.push(task.trim());
+  saveData("campusconnect_checklist", tasks);
+  renderChecklist();
+}
+
+function toggleTimer() {
+  const button = document.getElementById("timerButton");
+
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    button.textContent = "Resume";
+    return;
+  }
+
+  button.textContent = "Pause";
+  timerInterval = setInterval(() => {
+    timerSeconds = Math.max(0, timerSeconds - 1);
+    document.getElementById("timer").textContent =
+      String(Math.floor(timerSeconds / 60)).padStart(2, "0") + ":" +
+      String(timerSeconds % 60).padStart(2, "0");
+
+    if (timerSeconds === 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      button.textContent = "Start focus";
+      timerSeconds = 25 * 60;
+      showToast("Focus session complete. Take a short break!");
+    }
+  }, 1000);
+}
+
+document.getElementById("departmentFilter").addEventListener("change", renderResources);
+document.getElementById("currentDate").textContent =
+  new Intl.DateTimeFormat("en", { weekday: "short", month: "short", day: "numeric" }).format(new Date()).toUpperCase();
+
+renderAll();
+
+if (currentUser) {
+  updateUserInterface();
+} else {
+  document.getElementById("authModal").classList.add("show");
+  updateAuthModal("register");
+}
+</script>
+</body>
+</html>
